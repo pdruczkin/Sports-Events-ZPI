@@ -1,5 +1,6 @@
 using Api;
 using Application;
+using Application.Common.Middleware;
 using Infrastructure;
 using Infrastructure.Persistence;
 
@@ -8,8 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddApiServices();
+builder.Services.AddScoped<ExceptionHandlingMiddleware>();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

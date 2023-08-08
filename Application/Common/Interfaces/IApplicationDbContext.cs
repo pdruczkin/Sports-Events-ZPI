@@ -5,5 +5,7 @@ namespace Application.Common.Interfaces;
 
 public interface IApplicationDbContext
 {
-    public DbSet<Car> Cars { get; }
+    DbSet<Car> Cars { get; }
+
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

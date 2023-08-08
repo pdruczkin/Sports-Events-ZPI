@@ -20,4 +20,5 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
+    
 }
