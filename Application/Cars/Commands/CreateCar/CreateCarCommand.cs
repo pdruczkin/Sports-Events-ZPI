@@ -1,16 +1,9 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Domain.Enums;
-using Application.Cars.Queries.GetById;
 using Application.Common.Interfaces;
 using AutoMapper;
 using Domain.Entities;
 using Application.Common.Mappings;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Application.Cars.Commands.CreateCar
 {

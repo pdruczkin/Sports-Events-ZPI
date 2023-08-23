@@ -8,6 +8,7 @@ namespace Infrastructure.Persistence;
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     public DbSet<Car> Cars => Set<Car>();
+    public DbSet<User> Users => Set<User>();
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
