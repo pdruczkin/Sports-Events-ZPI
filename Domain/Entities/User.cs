@@ -10,6 +10,8 @@ public class User
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public DateTime DateOfBirth { get; set; }
+    
+    public Gender Gender { get; set; }
     public string PasswordHash { get; set; }
     public Role Role { get; set; } = Role.User;
     public bool IsAccountActive { get; set; } = true; //To be change with email verification

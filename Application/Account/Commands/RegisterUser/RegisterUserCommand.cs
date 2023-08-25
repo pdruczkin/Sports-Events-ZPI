@@ -2,10 +2,11 @@
 using Application.Common.Mappings;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
-namespace Application.Account.Commands;
+namespace Application.Account.Commands.RegisterUser;
 
 public class RegisterUserCommand : IRequest<string>, IMappable<User>
 {
@@ -14,6 +15,7 @@ public class RegisterUserCommand : IRequest<string>, IMappable<User>
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public DateTimeOffset DateOfBirth { get; set; }
+    public Gender Gender { get; set; }
     public string Password { get; set; }
     public string ConfirmPassword { get; set; }
 

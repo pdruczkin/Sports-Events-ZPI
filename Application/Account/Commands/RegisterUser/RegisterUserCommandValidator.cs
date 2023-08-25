@@ -1,7 +1,7 @@
 ﻿using Application.Common.Interfaces;
 using FluentValidation;
 
-namespace Application.Account.Commands;
+namespace Application.Account.Commands.RegisterUser;
 
 public class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
 {
