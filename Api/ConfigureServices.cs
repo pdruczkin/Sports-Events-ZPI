@@ -1,8 +1,4 @@
-﻿using Infrastructure.Persistence;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Models;
-
-namespace Api;
+﻿namespace Api;
 
 public static class ConfigureServices
 {

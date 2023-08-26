@@ -40,9 +40,7 @@ namespace Application.Common.Middleware
             context.Response.StatusCode = statusCode;
             await context.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
-
-
-
+        
         private static int GetStatusCode(Exception exception) =>
             exception switch
             {
