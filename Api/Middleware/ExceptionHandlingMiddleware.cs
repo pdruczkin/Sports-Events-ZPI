@@ -9,6 +9,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using System.Net.Http;
 using System.Text.Json;
+using Application.Common.Exceptions;
 
 namespace Application.Common.Middleware
 {
@@ -47,6 +48,7 @@ namespace Application.Common.Middleware
             exception switch
             {
                 ValidationException => StatusCodes.Status400BadRequest,
+                AppException => StatusCodes.Status400BadRequest,
                 _ => StatusCodes.Status500InternalServerError
             };
 
