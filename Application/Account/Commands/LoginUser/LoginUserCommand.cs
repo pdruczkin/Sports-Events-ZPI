@@ -3,10 +3,12 @@ using System.Security.Claims;
 using System.Text;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Models;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Account.Commands.LoginUser;
@@ -21,11 +23,15 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, string>
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly AuthenticationSettings _authSettings;
+    private readonly IDateTimeProvider _dateTimeProvider;
 
-    public LoginUserCommandHandler(IApplicationDbContext dbContext, IPasswordHasher<User> passwordHasher)
+    public LoginUserCommandHandler(IApplicationDbContext dbContext, IPasswordHasher<User> passwordHasher, AuthenticationSettings authSettings, IDateTimeProvider dateTimeProvider) 
     {
         _dbContext = dbContext;
         _passwordHasher = passwordHasher;
+        _authSettings = authSettings;
+        _dateTimeProvider = dateTimeProvider;
     }
     
     public async Task<string> Handle(LoginUserCommand request, CancellationToken cancellationToken)
@@ -50,7 +56,17 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, string>
             new(ClaimTypes.Gender, $"{user.Gender}"),
             new(ClaimTypes.DateOfBirth, $"{user.DateOfBirth.ToShortDateString()}"),
         };
+        
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authSettings.JwtKey));
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var expires = _dateTimeProvider.UtcNow.AddDays(_authSettings.JwtExpireDays).DateTime;
 
-        return "test";
+        var token = new JwtSecurityToken(_authSettings.JwtIssuer, _authSettings.JwtIssuer, claimList, null, expires, credentials);
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        var generatedToken = tokenHandler.WriteToken(token);
+
+        return generatedToken;
     }
 }

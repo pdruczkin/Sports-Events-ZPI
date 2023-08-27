@@ -1,10 +1,11 @@
-﻿using Application.Account.Commands;
-using Application.Account.Commands.LoginUser;
+﻿using Application.Account.Commands.LoginUser;
 using Application.Account.Commands.RegisterUser;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
+[AllowAnonymous]
 public class AccountController : ApiControllerBase
 {
     [HttpPost("register")]
@@ -22,5 +23,4 @@ public class AccountController : ApiControllerBase
 
         return Ok(jwtToken);
     }
-
 }
