@@ -22,7 +22,7 @@ public class RegisterUserCommand : IRequest<string>, IMappable<User>
     public void Mapping(Profile profile)
     {
         profile.CreateMap<RegisterUserCommand, User>()
-            .ForMember(u => u.DateOfBirth, o => o.MapFrom(s => s.DateOfBirth.UtcDateTime));
+            .ForMember(u => u.DateOfBirth, o => o.MapFrom(s => s.DateOfBirth.Date));
     }
 }
 
