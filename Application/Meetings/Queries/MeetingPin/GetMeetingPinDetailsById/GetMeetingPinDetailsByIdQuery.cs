@@ -22,7 +22,7 @@ public class GetAllMeetingPinsQueryHandler : IRequestHandler<GetMeetingPinDetail
 
     public async Task<MeetingPinDetailsDto> Handle(GetMeetingPinDetailsByIdQuery request, CancellationToken cancellationToken)
     {
-        var meeting = _applicationDbContext.Meetings.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
+        var meeting = await _applicationDbContext.Meetings.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
         var pinDetailsDto = _mapper.Map<MeetingPinDetailsDto>(meeting);
 
         return pinDetailsDto;

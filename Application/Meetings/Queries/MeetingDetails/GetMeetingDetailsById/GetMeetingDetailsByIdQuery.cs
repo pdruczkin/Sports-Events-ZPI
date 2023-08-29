@@ -30,7 +30,7 @@ public class GetMeetingDetailsByIdQueryHandler : IRequestHandler<GetMeetingDetai
 
     public async Task<MeetingDetailsDto> Handle(GetMeetingDetailsByIdQuery request, CancellationToken cancellationToken)
     {
-        var meetingDetails = _dbContext
+        var meetingDetails = await _dbContext
                             .Meetings
                             .Include(nameof(Meeting.Organizer))
                             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
