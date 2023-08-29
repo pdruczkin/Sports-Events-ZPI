@@ -1,14 +1,7 @@
-﻿using Application.Cars.Queries.GetById;
-using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Meetings.Queries.MeetingDetails.GetMeetingDetailsById;
 
@@ -33,7 +26,9 @@ public class GetMeetingDetailsByIdQueryHandler : IRequestHandler<GetMeetingDetai
         var meetingDetails = _dbContext.Meetings.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
 
         var meetingDetailsDto = _mapper.Map<MeetingDetailsDto>(meetingDetails);
-        meetingDetailsDto.OrganizerUsername = _dbContext.Users.FirstOrDefaultAsync(x => x.Id == meetingDetails.Result.OrganizerId, cancellationToken: cancellationToken).Result.Username;
+
+        var organizer = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == meetingDetails.Result.OrganizerId, cancellationToken: cancellationToken);
+        meetingDetailsDto.OrganizerUsername = organizer.Username;
 
         return meetingDetailsDto;
     }

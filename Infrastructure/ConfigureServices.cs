@@ -20,7 +20,9 @@ public static class ConfigureServices
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
         services.AddScoped<ApplicationDbContextInitializer>();
 
+        services.AddHttpContextAccessor();
         services.AddScoped<IUserContextService, UserContextService>();
+
         services.AddTransient<IDateTimeProvider, DateTimeProvider>();
         
         return services;

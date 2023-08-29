@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -46,7 +46,7 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Events",
+                name: "Meetings",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -64,48 +64,19 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Events", x => x.Id);
+                    table.PrimaryKey("PK_Meetings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Events_Users_OrganizerId",
+                        name: "FK_Meetings_Users_OrganizerId",
                         column: x => x.OrganizerId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "EventUser",
-                columns: table => new
-                {
-                    ParticipantsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ParticipatedEventsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EventUser", x => new { x.ParticipantsId, x.ParticipatedEventsId });
-                    table.ForeignKey(
-                        name: "FK_EventUser_Events_ParticipatedEventsId",
-                        column: x => x.ParticipatedEventsId,
-                        principalTable: "Events",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EventUser_Users_ParticipantsId",
-                        column: x => x.ParticipantsId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
-                name: "IX_Events_OrganizerId",
-                table: "Events",
+                name: "IX_Meetings_OrganizerId",
+                table: "Meetings",
                 column: "OrganizerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EventUser_ParticipatedEventsId",
-                table: "EventUser",
-                column: "ParticipatedEventsId");
         }
 
         /// <inheritdoc />
@@ -115,10 +86,7 @@ namespace Infrastructure.Migrations
                 name: "Cars");
 
             migrationBuilder.DropTable(
-                name: "EventUser");
-
-            migrationBuilder.DropTable(
-                name: "Events");
+                name: "Meetings");
 
             migrationBuilder.DropTable(
                 name: "Users");

@@ -1,5 +1,4 @@
 ﻿using Application.Common.Interfaces;
-using Application.Common.Mappings;
 using AutoMapper;
 using MediatR;
 

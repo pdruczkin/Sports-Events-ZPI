@@ -1,10 +1,9 @@
-﻿using Application.Common.Mappings;
-using Domain.Enums;
-using Domain.Entities;
-using MediatR;
-using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces;
+using Application.Common.Mappings;
 using AutoMapper;
-using Microsoft.AspNetCore.Identity;
+using Domain.Entities;
+using Domain.Enums;
+using MediatR;
 
 namespace Application.Meetings.Commands;
 
