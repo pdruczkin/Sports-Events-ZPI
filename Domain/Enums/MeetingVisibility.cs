@@ -2,7 +2,7 @@
 {
     public enum MeetingVisibility
     {
-        Public,
-        Private
+        Private,
+        Public        
     }
 }

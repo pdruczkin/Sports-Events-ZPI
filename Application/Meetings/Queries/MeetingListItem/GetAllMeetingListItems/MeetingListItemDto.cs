@@ -1,4 +1,6 @@
-﻿using Application.Common.Mappings;
+﻿using Application.Account.Commands.RegisterUser;
+using Application.Common.Mappings;
+using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 
@@ -17,4 +19,5 @@ public class MeetingListItemDto : IMappable<Meeting>
     public Difficulty Difficulty { get; set; }
 
     public string OrganizerUsername { get; set; }
+
 }

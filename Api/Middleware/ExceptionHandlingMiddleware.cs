@@ -47,6 +47,7 @@ namespace Application.Common.Middleware
             {
                 ValidationException => StatusCodes.Status400BadRequest,
                 AppException => StatusCodes.Status400BadRequest,
+                UnauthorizedException => StatusCodes.Status401Unauthorized,
                 _ => StatusCodes.Status500InternalServerError
             };
 
