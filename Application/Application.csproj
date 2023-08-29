@@ -8,8 +8,7 @@
 
     <ItemGroup>
       <Folder Include="Account\Queries" />
-      <Folder Include="Meeting\Queries\MeetingPin\" />
-      <Folder Include="Meeting\Queries\MeetingListItem\" />
+      <Folder Include="Meetings\Queries\MeetingListItem\GetAllMeetingListItems\" />
     </ItemGroup>
 
     <ItemGroup>
