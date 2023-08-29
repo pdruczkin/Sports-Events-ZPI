@@ -1,6 +1,6 @@
 ﻿namespace Domain.Enums
 {
-    public enum EventVisibility
+    public enum MeetingVisibility
     {
         Public,
         Private

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230826155344_init")]
+    [Migration("20230827184832_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -63,7 +63,7 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Difficulty")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("EndDateTime")
+                    b.Property<DateTime>("EndDateTimeUtc")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Latitude")
@@ -78,7 +78,7 @@ namespace Infrastructure.Migrations
                     b.Property<int>("SportsDiscipline")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("StartDateTime")
+                    b.Property<DateTime>("StartDateTimeUtc")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
@@ -143,6 +143,21 @@ namespace Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("EventUser", b =>
+                {
+                    b.Property<Guid>("ParticipantsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ParticipatedEventsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ParticipantsId", "ParticipatedEventsId");
+
+                    b.HasIndex("ParticipatedEventsId");
+
+                    b.ToTable("EventUser");
+                });
+
             modelBuilder.Entity("Domain.Entities.Event", b =>
                 {
                     b.HasOne("Domain.Entities.User", "Organizer")
@@ -152,6 +167,21 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Organizer");
+                });
+
+            modelBuilder.Entity("EventUser", b =>
+                {
+                    b.HasOne("Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("ParticipantsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Event", null)
+                        .WithMany()
+                        .HasForeignKey("ParticipatedEventsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>

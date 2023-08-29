@@ -55,8 +55,8 @@ namespace Infrastructure.Migrations
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Latitude = table.Column<decimal>(type: "decimal(8,6)", nullable: false),
                     Longitude = table.Column<decimal>(type: "decimal(9,6)", nullable: false),
-                    StartDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StartDateTimeUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDateTimeUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Visibility = table.Column<int>(type: "int", nullable: false),
                     SportsDiscipline = table.Column<int>(type: "int", nullable: false),
                     Difficulty = table.Column<int>(type: "int", nullable: false),
@@ -73,10 +73,39 @@ namespace Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "EventUser",
+                columns: table => new
+                {
+                    ParticipantsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ParticipatedEventsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventUser", x => new { x.ParticipantsId, x.ParticipatedEventsId });
+                    table.ForeignKey(
+                        name: "FK_EventUser_Events_ParticipatedEventsId",
+                        column: x => x.ParticipatedEventsId,
+                        principalTable: "Events",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EventUser_Users_ParticipantsId",
+                        column: x => x.ParticipantsId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Events_OrganizerId",
                 table: "Events",
                 column: "OrganizerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventUser_ParticipatedEventsId",
+                table: "EventUser",
+                column: "ParticipatedEventsId");
         }
 
         /// <inheritdoc />
@@ -84,6 +113,9 @@ namespace Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Cars");
+
+            migrationBuilder.DropTable(
+                name: "EventUser");
 
             migrationBuilder.DropTable(
                 name: "Events");

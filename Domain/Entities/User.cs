@@ -17,6 +17,6 @@ public class User
     public bool IsAccountActive { get; set; } = true; //To be change with email verification
 
 
-    public ICollection<Event> OrganizedEvents { get; set; }
-   // public ICollection<Event> ParticipatedEvents { get; set; }
+    public ICollection<Meeting> OrganizedEvents { get; set; }
+  //  public ICollection<Event> ParticipatedEvents { get; set; }
 }
