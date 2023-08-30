@@ -15,4 +15,8 @@ public class User
     public string PasswordHash { get; set; }
     public Role Role { get; set; } = Role.User;
     public bool IsAccountActive { get; set; } = true; //To be change with email verification
+
+
+    public ICollection<Meeting> OrganizedEvents { get; set; }
+  //  public ICollection<Event> ParticipatedEvents { get; set; }
 }

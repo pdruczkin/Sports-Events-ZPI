@@ -41,14 +41,13 @@ namespace Application.Common.Middleware
             context.Response.StatusCode = statusCode;
             await context.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
-
-
-
+        
         private static int GetStatusCode(Exception exception) =>
             exception switch
             {
                 ValidationException => StatusCodes.Status400BadRequest,
                 AppException => StatusCodes.Status400BadRequest,
+                UnauthorizedException => StatusCodes.Status401Unauthorized,
                 _ => StatusCodes.Status500InternalServerError
             };
 
