@@ -1,6 +1,7 @@
 ﻿using Application.Common.Interfaces;
 using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Meetings.Queries.MeetingPin.GetAllMeetingPins;
 
@@ -21,7 +22,8 @@ public class GetAllMeetingPinsQueryHandler : IRequestHandler<GetAllMeetingPinsQu
 
     public async Task<IEnumerable<MeetingPinDto>> Handle(GetAllMeetingPinsQuery request, CancellationToken cancellationToken)
     {
-        var allPinsDtos = _mapper.Map<IEnumerable<MeetingPinDto>>(_applicationDbContext.Meetings);
+        var meetings = await _applicationDbContext.Meetings.ToListAsync();
+        var allPinsDtos = _mapper.Map<IEnumerable<MeetingPinDto>>(meetings);
 
         return allPinsDtos;
     }

@@ -1,5 +1,4 @@
 ﻿using Application.Common.Interfaces;
-using Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
@@ -32,7 +31,7 @@ public class GetMeetingDetailsByIdQueryHandler : IRequestHandler<GetMeetingDetai
     {
         var meetingDetails = await _dbContext
                             .Meetings
-                            .Include(nameof(Meeting.Organizer))
+                            .Include(x => x.Organizer)
                             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
 
         var meetingDetailsDto = _mapper.Map<MeetingDetailsDto>(meetingDetails);

@@ -1,5 +1,4 @@
-﻿using Application.Account.Commands.RegisterUser;
-using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
@@ -31,9 +30,10 @@ public class GetAllMeetingListItemsQueryHandler : IRequestHandler<GetAllMeetingL
 
     public async Task<IEnumerable<MeetingListItemDto>> Handle(GetAllMeetingListItemsQuery request, CancellationToken cancellationToken)
     {
-        var meetings = _applicationDbContext
+        var meetings = await _applicationDbContext
                         .Meetings
-                        .Include(nameof(Meeting.Organizer));
+                        .Include(x => x.Organizer)
+                        .ToListAsync();
 
         var meetingListItemsDtos = _mapper.Map<IEnumerable<MeetingListItemDto>>(meetings);
 
