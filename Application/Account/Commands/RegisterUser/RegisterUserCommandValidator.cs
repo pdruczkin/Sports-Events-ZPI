@@ -52,6 +52,8 @@ public class RegisterUserCommandValidator : AbstractValidator<RegisterUserComman
                     context.AddFailure("Username", "Username must be unique");
                 }
             });
-        
+
+        RuleFor(u => u.Gender).IsInEnum();
+
     }
 }

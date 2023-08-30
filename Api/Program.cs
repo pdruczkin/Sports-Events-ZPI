@@ -13,6 +13,8 @@ builder.Services.AddScoped<ExceptionHandlingMiddleware>();
 
 var app = builder.Build();
 
+app.UseCors("FrontEndClient");
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())

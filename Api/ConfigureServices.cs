@@ -34,6 +34,18 @@ public static class ConfigureServices
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+        services.AddHttpContextAccessor();
+        services.AddCors(options =>
+        {
+            options.AddPolicy("FrontEndClient", opt =>
+            {
+                opt.AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .WithOrigins(configuration["AllowedOrigins"]);
+            });
+        });
+        
+        
         
 
         return services;

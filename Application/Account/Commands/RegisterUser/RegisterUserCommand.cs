@@ -14,17 +14,20 @@ public class RegisterUserCommand : IRequest<string>, IMappable<User>
     public string Username { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public DateTimeOffset DateOfBirth { get; set; }
+    public DateOnly DateOfBirth { get; set; }
     public Gender Gender { get; set; }
     public string Password { get; set; }
     public string ConfirmPassword { get; set; }
 
+
     public void Mapping(Profile profile)
     {
         profile.CreateMap<RegisterUserCommand, User>()
-            .ForMember(u => u.DateOfBirth, o => o.MapFrom(s => s.DateOfBirth.Date));
+            .ForMember(u => u.DateOfBirth, o => o.MapFrom(s => new DateTime(s.DateOfBirth.Year, s.DateOfBirth.Month, s.DateOfBirth.Day)));
     }
 }
+
+
 
 public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, string>
 {

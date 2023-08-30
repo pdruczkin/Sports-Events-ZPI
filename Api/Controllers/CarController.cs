@@ -1,5 +1,6 @@
 ﻿using Application.Cars.Commands.CreateCar;
 using Application.Cars.Queries.GetById;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -19,5 +20,4 @@ public class CarController : ApiControllerBase
         var newCarGuid = await Mediator.Send(command);
         return Created(newCarGuid, null);
     }
-
 }
