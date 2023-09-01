@@ -1,4 +1,5 @@
-﻿using Application.Common.Interfaces;
+﻿using System.Security.Cryptography;
+using Application.Common.Interfaces;
 using Application.Common.Mappings;
 using AutoMapper;
 using Domain.Entities;
@@ -49,10 +50,18 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, s
 
         var passwordHash = _passwordHasher.HashPassword(user, request.Password);
         user.PasswordHash = passwordHash;
+
+        var verificationToken = CreateRandomBase64Token();
+        user.VerificationToken = verificationToken;
         
         _applicationDbContext.Users.Add(user);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);
 
         return user.Id.ToString();
+    }
+
+    private string CreateRandomBase64Token()
+    {
+        return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
     }
 }

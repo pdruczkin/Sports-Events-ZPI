@@ -2,6 +2,6 @@
 
 public interface IDateTimeProvider
 {
-    public DateTimeOffset Now { get; }
-    public DateTimeOffset UtcNow { get; }
+    public DateTime Now { get; }
+    public DateTime UtcNow { get; }
 }

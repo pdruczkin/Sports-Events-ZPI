@@ -1,5 +1,6 @@
 ﻿using Application.Account.Commands.LoginUser;
 using Application.Account.Commands.RegisterUser;
+using Application.Account.Commands.VerifyAccount;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,5 +23,13 @@ public class AccountController : ApiControllerBase
         var jwtToken = await Mediator.Send(command);
 
         return Ok(jwtToken);
+    }
+
+    [HttpPost("verify")]
+    public async Task<ActionResult> Verify([FromBody] string token)
+    {
+        await Mediator.Send(new VerifyAccountCommand() { Token = token });
+
+        return NoContent();
     }
 }
