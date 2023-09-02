@@ -26,7 +26,7 @@ public class AccountController : ApiControllerBase
     }
 
     [HttpPost("verify")]
-    public async Task<ActionResult> Verify([FromBody] string token)
+    public async Task<ActionResult> Verify([FromQuery] string token)
     {
         await Mediator.Send(new VerifyAccountCommand() { Token = token });
 

@@ -14,7 +14,6 @@ public class User
     public Gender Gender { get; set; }
     public string PasswordHash { get; set; }
     public Role Role { get; set; } = Role.User;
-    public bool IsAccountActive { get; set; } = true; //To be change with email verification
     
     //Account
     public string? VerificationToken { get; set; }

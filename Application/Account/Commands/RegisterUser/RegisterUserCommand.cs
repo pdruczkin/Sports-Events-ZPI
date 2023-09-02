@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using Application.Common.Interfaces;
 using Application.Common.Mappings;
+using Application.Common.Models;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
@@ -35,12 +36,14 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, s
     private readonly IApplicationDbContext _applicationDbContext;
     private readonly IMapper _mapper;
     private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly IEmailSender _emailSender;
 
-    public RegisterUserCommandHandler(IApplicationDbContext applicationDbContext, IMapper mapper, IPasswordHasher<User> passwordHasher)
+    public RegisterUserCommandHandler(IApplicationDbContext applicationDbContext, IMapper mapper, IPasswordHasher<User> passwordHasher, IEmailSender emailSender)
     {
         _applicationDbContext = applicationDbContext;
         _mapper = mapper;
         _passwordHasher = passwordHasher;
+        _emailSender = emailSender;
     }
     
     
@@ -56,12 +59,28 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, s
         
         _applicationDbContext.Users.Add(user);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);
-
+        
+        SendVerificationEmail(user.Email, user.Username, user.VerificationToken);
+        
         return user.Id.ToString();
     }
 
     private string CreateRandomBase64Token()
     {
-        return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+        return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
+    }
+
+    private void SendVerificationEmail(string userEmail, string username, string token)
+    {
+        var url = $"tutajURLdoFrontu?token={token}";
+
+        var emailDto = new EmailDto()
+        {
+            To = userEmail,
+            Subject = "Verify your Account",
+            Body = $"Hello {username}, click on link below to complete account activation process \n {url}"
+        };
+        
+        _emailSender.SendEmail(emailDto);
     }
 }
