@@ -4,5 +4,5 @@ namespace Application.Common.Interfaces;
 
 public interface IEmailSender
 {
-    void SendEmail(EmailDto request);
+    Task SendEmailAsync(EmailDto request);
 }

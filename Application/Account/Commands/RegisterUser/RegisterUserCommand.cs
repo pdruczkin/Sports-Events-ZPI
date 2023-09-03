@@ -59,9 +59,9 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, s
         
         _applicationDbContext.Users.Add(user);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);
-        
-        SendVerificationEmail(user.Email, user.Username, user.VerificationToken);
-        
+
+        await SendVerificationEmail(user.Email, user.Username, user.VerificationToken);
+
         return user.Id.ToString();
     }
 
@@ -70,7 +70,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, s
         return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
     }
 
-    private void SendVerificationEmail(string userEmail, string username, string token)
+    private Task SendVerificationEmail(string userEmail, string username, string token)
     {
         var url = $"tutajURLdoFrontu?token={token}";
 
@@ -81,6 +81,6 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, s
             Body = $"Hello {username}, click on link below to complete account activation process \n {url}"
         };
         
-        _emailSender.SendEmail(emailDto);
+        return _emailSender.SendEmailAsync(emailDto);
     }
 }
