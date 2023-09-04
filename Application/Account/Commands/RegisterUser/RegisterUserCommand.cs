@@ -54,18 +54,18 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, s
         var passwordHash = _passwordHasher.HashPassword(user, request.Password);
         user.PasswordHash = passwordHash;
 
-        var verificationToken = CreateRandomBase64Token();
+        var verificationToken = CreateRandomHexToken();
         user.VerificationToken = verificationToken;
         
         _applicationDbContext.Users.Add(user);
-        await _applicationDbContext.SaveChangesAsync(cancellationToken);
-
         await SendVerificationEmail(user.Email, user.Username, user.VerificationToken);
-
+        
+        await _applicationDbContext.SaveChangesAsync(cancellationToken);
+        
         return user.Id.ToString();
     }
 
-    private string CreateRandomBase64Token()
+    private string CreateRandomHexToken()
     {
         return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
     }

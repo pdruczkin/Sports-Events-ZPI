@@ -24,10 +24,15 @@ public class VerifyAccountCommandHandler : IRequestHandler<VerifyAccountCommand,
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.VerificationToken == request.Token,
             cancellationToken);
-
+        
         if (user == null)
         {
             throw new AppException("Invalid token");
+        }
+
+        if (user.VerifiedAt is not null)
+        {
+            throw new AppException("Account is already verified");
         }
 
         user.VerifiedAt = _dateTimeProvider.UtcNow;
