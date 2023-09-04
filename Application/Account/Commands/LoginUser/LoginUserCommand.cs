@@ -47,6 +47,12 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, string>
         if (passwordVerificationResult == PasswordVerificationResult.Failed) 
             throw new AppException("Email or Password is incorrect");
 
+        if (user.VerifiedAt is null)
+        {
+            throw new AppException("Account is not verified, check your email!");
+        }
+        
+        
         var claimList = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -59,7 +65,7 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, string>
         
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authSettings.JwtKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var expires = _dateTimeProvider.UtcNow.AddDays(_authSettings.JwtExpireDays).DateTime;
+        var expires = _dateTimeProvider.UtcNow.AddDays(_authSettings.JwtExpireDays);
 
         var token = new JwtSecurityToken(_authSettings.JwtIssuer, _authSettings.JwtIssuer, claimList, null, expires, credentials);
 
