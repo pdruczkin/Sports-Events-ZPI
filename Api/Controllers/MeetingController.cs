@@ -1,7 +1,6 @@
 ﻿using Application.Meetings.Commands.CreateMeeting;
 using Application.Meetings.Queries.MeetingDetails.GetMeetingDetailsById;
 using Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
-using Application.Meetings.Queries.MeetingPin.GetAllMeetingPins;
 using Application.Meetings.Queries.MeetingPin.GetMeetingPinDetailsById;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,11 +30,15 @@ namespace Api.Controllers
             return Ok(meetingListItemsDtos);
         }
 
-
         [HttpGet("pin")]
-        public async Task<ActionResult<IEnumerable<MeetingPinDto>>> GetAllMeetingPins()
+        public async Task<ActionResult<IEnumerable<MeetingListItemDto>>> GetAllMeetingPins([FromQuery] double swLat, [FromQuery] double swLng, [FromQuery] double neLat, [FromQuery] double neLng)
         {
-            var meetingPinsDtos = await Mediator.Send(new GetAllMeetingPinsQuery());
+            var meetingPinsDtos = await Mediator.Send(new GetAllMeetingListItemsQuery() { 
+                SouthWestLatitude = swLat,
+                SouthWestLongitude = swLng,
+                NorthEastLatitude = neLat,
+                NorthEastLongitude = neLng
+            });
             return Ok(meetingPinsDtos);
         }
 
