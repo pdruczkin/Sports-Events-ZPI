@@ -31,16 +31,6 @@ public class ApplicationDbContextInitializer
     
     public async Task SeedAsync()
     {
-        if (!_dbContext.Cars.Any())
-        {
-            _dbContext.Add(new Car
-            {
-                MaxSpeed = 100,
-                Name = "Audi",
-                Color = Color.Black
-            });
-        }
-
         if (!_dbContext.Users.Any())
         {
             var userAdmin = new User
