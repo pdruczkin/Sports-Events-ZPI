@@ -1,4 +1,5 @@
-﻿using Application.Account.Commands.ForgotPassword;
+﻿using Application.Account.Commands.ChangePassword;
+using Application.Account.Commands.ForgotPassword;
 using Application.Account.Commands.LoginUser;
 using Application.Account.Commands.RegisterUser;
 using Application.Account.Commands.ResetPassword;
@@ -50,4 +51,14 @@ public class AccountController : ApiControllerBase
 
         return NoContent();
     }
+    
+    
+    [HttpPut("changePassword")]
+    public async Task<ActionResult> ChangePassword(ChangePasswordCommand command)
+    {
+        await Mediator.Send(command);
+
+        return Ok();
+    }
+    
 }
