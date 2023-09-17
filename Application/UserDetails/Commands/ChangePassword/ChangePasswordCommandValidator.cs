@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Application.Account.Commands.ChangePassword;
+namespace Application.UserDetails.Commands.ChangePassword;
 
 public class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordCommand>
 {

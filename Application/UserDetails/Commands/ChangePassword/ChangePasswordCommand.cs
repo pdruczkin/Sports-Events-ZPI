@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Account.Commands.ChangePassword;
+namespace Application.UserDetails.Commands.ChangePassword;
 
 public class ChangePasswordCommand : IRequest<Unit>
 {
