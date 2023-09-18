@@ -29,22 +29,25 @@ public class CreateMeetingCommandValidatior :AbstractValidator<CreateMeetingComm
         RuleFor(x => x.StartDateTimeUtc)
             .NotEmpty()
             .GreaterThanOrEqualTo(DateTime.UtcNow)
-            .WithMessage("Start time of a new meeting can not be in the past.");
-
-        RuleFor(x => x.StartDateTimeUtc)
+            .WithMessage("Start time of a new meeting can not be in the past.")
             .LessThan(x => x.EndDateTimeUtc)
             .WithMessage("Meeting's start time must be before meeting's end time.");
 
-        RuleFor(x => x.Visibility)
+        RuleFor(x => x.EndDateTimeUtc)
             .NotEmpty()
+            .GreaterThan(DateTime.UtcNow)
+            .WithMessage("End time of a new meeting can not be in the past.");
+
+        RuleFor(x => x.Visibility)
+            .NotNull()
             .IsInEnum();
 
         RuleFor(x => x.SportsDiscipline)
-            .NotEmpty()
+            .NotNull()
             .IsInEnum();
 
         RuleFor(x => x.Difficulty)
-            .NotEmpty()
+            .NotNull()
             .IsInEnum();
 
     }
