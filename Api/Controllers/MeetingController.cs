@@ -1,8 +1,8 @@
-﻿using Application.Meetings.Commands.CreateMeeting;
+﻿using Application.Common.Models;
+using Application.Meetings.Commands.CreateMeeting;
 using Application.Meetings.Queries.MeetingDetails.GetMeetingDetailsById;
 using Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
 using Application.Meetings.Queries.MeetingPin.GetMeetingPinDetailsById;
-using Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -25,22 +25,9 @@ namespace Api.Controllers
 
 
         [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<MeetingListItemDto>>> GetAllMeetingListItems(
-            [FromQuery] double swLat, [FromQuery] double swLng, [FromQuery] double neLat, [FromQuery] double neLng,
-            [FromQuery] DateTime? startDateTime, [FromQuery] SportsDiscipline? discipline,
-            [FromQuery] Difficulty? difficulty, [FromQuery] MeetingVisibility? visibility)
+        public async Task<ActionResult<PagedResult<MeetingListItemDto>>> GetAllMeetingListItems([FromQuery] GetMeetingListItemsQuery request)
         {
-            var meetingListItemsDtos = await Mediator.Send(new GetMeetingListItemsQuery()
-            {
-                SouthWestLatitude = swLat,
-                SouthWestLongitude = swLng,
-                NorthEastLatitude = neLat,
-                NorthEastLongitude = neLng,
-                StartDateTimeUtc = startDateTime,
-                SportsDiscipline = discipline,
-                Difficulty = difficulty,
-                MeetingVisibility = visibility
-            });
+            var meetingListItemsDtos = await Mediator.Send(request);
             return Ok(meetingListItemsDtos);
         }
 

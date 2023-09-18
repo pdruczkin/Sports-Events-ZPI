@@ -5,6 +5,7 @@ namespace Application.Meetings.Queries.MeetingPin.GetAllMeetingListItems;
 
 public class GetAllMeetingListItemsQueryValidator : AbstractValidator<GetMeetingListItemsQuery>
 {
+    private int[] allowedPageSizes = new[] { 10, 30, 60, 120 };
     public GetAllMeetingListItemsQueryValidator()
     {
         RuleFor(x => x.SouthWestLatitude)
@@ -39,5 +40,15 @@ public class GetAllMeetingListItemsQueryValidator : AbstractValidator<GetMeeting
 
         RuleFor(x => x.MeetingVisibility)
             .IsInEnum();
+
+        RuleFor(r => r.PageNumber).GreaterThanOrEqualTo(1);
+
+        RuleFor(r => r.PageSize).Custom((value, context) =>
+        {
+            if (!allowedPageSizes.Contains(value))
+            {
+                context.AddFailure("PageSize", $"PageSize must in [{string.Join(",", allowedPageSizes)}]");
+            }
+        });
     }
 }
