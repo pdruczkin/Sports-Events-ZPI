@@ -1,12 +1,16 @@
 ﻿using Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
+using Domain.Entities;
 using FluentValidation;
 
 namespace Application.Meetings.Queries.MeetingPin.GetAllMeetingListItems;
 
-public class GetAllMeetingListItemsQueryValidator : AbstractValidator<GetMeetingListItemsQuery>
+public class GetMeetingListItemsQueryValidator : AbstractValidator<GetMeetingListItemsQuery>
 {
     private int[] allowedPageSizes = new[] { 10, 30, 60, 120 };
-    public GetAllMeetingListItemsQueryValidator()
+    private string[] allowedSortByColumnNames =
+        { nameof(Meeting.StartDateTimeUtc), nameof(Meeting.Difficulty) };
+
+    public GetMeetingListItemsQueryValidator()
     {
         RuleFor(x => x.SouthWestLatitude)
             .NotNull()
@@ -50,5 +54,9 @@ public class GetAllMeetingListItemsQueryValidator : AbstractValidator<GetMeeting
                 context.AddFailure("PageSize", $"PageSize must in [{string.Join(",", allowedPageSizes)}]");
             }
         });
+
+        RuleFor(r => r.SortBy).Must(value => string.IsNullOrEmpty(value) || allowedSortByColumnNames.Contains(value))
+            .WithMessage($"Sort by is optional, or must be in [{string.Join(",", allowedSortByColumnNames)}]");
+
     }
 }

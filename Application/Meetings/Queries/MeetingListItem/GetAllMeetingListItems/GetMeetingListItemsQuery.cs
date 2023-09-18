@@ -1,11 +1,12 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Enums;
+using Application.Common.Interfaces;
 using Application.Common.Models;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Linq.Expressions;
 
 namespace Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
 
@@ -22,6 +23,8 @@ public class GetMeetingListItemsQuery : IRequest<PagedResult<MeetingListItemDto>
     public string? TitleSearchPhrase { get; set; }
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
+    public string? SortBy { get; set; }
+    public SortDirection? SortDirection { get; set; }
 }
 
 public class GetAllMeetingListItemsQueryHandler : IRequestHandler<GetMeetingListItemsQuery, PagedResult<MeetingListItemDto>>
@@ -44,6 +47,22 @@ public class GetAllMeetingListItemsQueryHandler : IRequestHandler<GetMeetingList
     public async Task<PagedResult<MeetingListItemDto>> Handle(GetMeetingListItemsQuery request, CancellationToken cancellationToken)
     {
         var filteredMeetingsBaseQuery = GetFilteredMeetingsQuery(request);
+
+        if (!string.IsNullOrEmpty(request.SortBy))
+        {
+            var columnsSelectors = new Dictionary<string, Expression<Func<Meeting, object>>>
+                {
+                    { nameof(Meeting.StartDateTimeUtc), r => r.StartDateTimeUtc },
+                    { nameof(Meeting.Difficulty), r => r.Difficulty }
+                };
+
+            var selectedColumn = columnsSelectors[request.SortBy];
+
+            filteredMeetingsBaseQuery = request.SortDirection == SortDirection.ASC
+                ? filteredMeetingsBaseQuery.OrderBy(selectedColumn)
+                : filteredMeetingsBaseQuery.OrderByDescending(selectedColumn);
+        }
+
         var filteredMeetingsPaged = await GetPagedMeetings(filteredMeetingsBaseQuery, request.PageSize, request.PageNumber);
 
         var totalMeetingsCount = filteredMeetingsBaseQuery.Count();
