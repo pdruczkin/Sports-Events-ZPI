@@ -1,7 +1,7 @@
-﻿using Application.Meetings.Commands.CreateMeeting;
+﻿using Application.Common.Models;
+using Application.Meetings.Commands.CreateMeeting;
 using Application.Meetings.Queries.MeetingDetails.GetMeetingDetailsById;
 using Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
-using Application.Meetings.Queries.MeetingPin.GetAllMeetingPins;
 using Application.Meetings.Queries.MeetingPin.GetMeetingPinDetailsById;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +13,7 @@ namespace Api.Controllers
         public async Task<ActionResult<MeetingDetailsDto>> GetById(Guid id)
         {
             var meetingDetailsDto = await Mediator.Send(new GetMeetingDetailsByIdQuery() { Id = id });
-            return Ok(meetingDetailsDto); 
+            return Ok(meetingDetailsDto);
         }
 
         [HttpPost]
@@ -25,18 +25,10 @@ namespace Api.Controllers
 
 
         [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<MeetingListItemDto>>> GetAllMeetingListItems()
+        public async Task<ActionResult<PagedResult<MeetingListItemDto>>> GetAllMeetingListItems([FromQuery] GetMeetingListItemsQuery request)
         {
-            var meetingListItemsDtos = await Mediator.Send(new GetAllMeetingListItemsQuery());
+            var meetingListItemsDtos = await Mediator.Send(request);
             return Ok(meetingListItemsDtos);
-        }
-
-
-        [HttpGet("pin")]
-        public async Task<ActionResult<IEnumerable<MeetingPinDto>>> GetAllMeetingPins()
-        {
-            var meetingPinsDtos = await Mediator.Send(new GetAllMeetingPinsQuery());
-            return Ok(meetingPinsDtos);
         }
 
         [HttpGet("pin/{id}")]

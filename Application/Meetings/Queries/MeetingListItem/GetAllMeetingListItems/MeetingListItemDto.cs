@@ -1,6 +1,4 @@
-﻿using Application.Account.Commands.RegisterUser;
-using Application.Common.Mappings;
-using AutoMapper;
+﻿using Application.Common.Mappings;
 using Domain.Entities;
 using Domain.Enums;
 
