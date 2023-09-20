@@ -16,10 +16,6 @@ public class ChangeUserDetailsCommandValidator : AbstractValidator<ChangeUserDet
             .NotEmpty()
             .MaximumLength(256);
         
-        RuleFor(x => x.LastName)
-            .NotEmpty()
-            .MaximumLength(256);
-
         RuleFor(u => u.Email)
             .NotEmpty()
             .MaximumLength(256)
