@@ -21,6 +21,11 @@ public class User
     
     public string? PasswordResetToken { get; set; }
     public DateTime? ResetTokenExpires { get; set; }
-    
+
+    public List<Friendship> AsInviter { get; set; }
+    public List<Friendship> AsInvitee { get; set; }
+
     public ICollection<Meeting> OrganizedEvents { get; set; }
+
+
 }

@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Infrastructure.Persistence.Migrations
+namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration
@@ -35,6 +34,33 @@ namespace Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Friendships",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    InviterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    InviteeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FriendshipStatus = table.Column<int>(type: "int", nullable: false),
+                    StatusDateTimeUtc = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Friendships", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Friendships_Users_InviteeId",
+                        column: x => x.InviteeId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Friendships_Users_InviterId",
+                        column: x => x.InviterId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Meetings",
                 columns: table => new
                 {
@@ -63,6 +89,16 @@ namespace Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Friendships_InviteeId",
+                table: "Friendships",
+                column: "InviteeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Friendships_InviterId",
+                table: "Friendships",
+                column: "InviterId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Meetings_OrganizerId",
                 table: "Meetings",
                 column: "OrganizerId");
@@ -71,6 +107,9 @@ namespace Infrastructure.Persistence.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Friendships");
+
             migrationBuilder.DropTable(
                 name: "Meetings");
 

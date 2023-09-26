@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Infrastructure.Persistence.Migrations
+namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230915152741_Init")]
+    [Migration("20230926172425_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -24,6 +24,33 @@ namespace Infrastructure.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Domain.Entities.Friendship", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("FriendshipStatus")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("InviteeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("InviterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("StatusDateTimeUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InviteeId");
+
+                    b.HasIndex("InviterId");
+
+                    b.ToTable("Friendships");
+                });
 
             modelBuilder.Entity("Domain.Entities.Meeting", b =>
                 {
@@ -131,6 +158,25 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Friendship", b =>
+                {
+                    b.HasOne("Domain.Entities.User", "Invitee")
+                        .WithMany("AsInvitee")
+                        .HasForeignKey("InviteeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.User", "Inviter")
+                        .WithMany("AsInviter")
+                        .HasForeignKey("InviterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Invitee");
+
+                    b.Navigation("Inviter");
+                });
+
             modelBuilder.Entity("Domain.Entities.Meeting", b =>
                 {
                     b.HasOne("Domain.Entities.User", "Organizer")
@@ -144,6 +190,10 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
+                    b.Navigation("AsInvitee");
+
+                    b.Navigation("AsInviter");
+
                     b.Navigation("OrganizedEvents");
                 });
 #pragma warning restore 612, 618
