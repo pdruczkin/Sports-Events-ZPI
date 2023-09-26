@@ -1,12 +1,5 @@
-﻿using Azure;
-using FluentValidation;
+﻿using FluentValidation;
 using MediatR;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Common.Behaviors
 {

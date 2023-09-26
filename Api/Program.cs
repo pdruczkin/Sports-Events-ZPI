@@ -4,6 +4,7 @@ using Application.Common.Middleware;
 using Infrastructure;
 using Infrastructure.Persistence;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
