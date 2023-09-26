@@ -18,10 +18,7 @@ public class Meeting
 
     public Guid OrganizerId { get; set; }
     public User Organizer { get; set; }
-
-
-   // public ICollection<User> Participants { get; set; }
-
-
+    
+    public ICollection<MeetingParticipant> MeetingParticipants { get; set; } = new List<MeetingParticipant>();
 }
 

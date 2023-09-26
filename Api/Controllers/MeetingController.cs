@@ -1,5 +1,6 @@
 ﻿using Application.Common.Models;
 using Application.Meetings.Commands.CreateMeeting;
+using Application.Meetings.Commands.JoinMeeting;
 using Application.Meetings.Queries.MeetingDetails.GetMeetingDetailsById;
 using Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
 using Application.Meetings.Queries.MeetingPin.GetMeetingPinDetailsById;
@@ -38,5 +39,12 @@ namespace Api.Controllers
             return Ok(pinDetailsDto);
         }
 
+
+        [HttpPost("{meetingId:guid}/join")]
+        public async Task<ActionResult> JoinMeeting([FromRoute] Guid meetingId)
+        {
+            await Mediator.Send(new JoinMeetingCommand() { MeetingId = meetingId });
+            return NoContent();
+        }
     }
 }
