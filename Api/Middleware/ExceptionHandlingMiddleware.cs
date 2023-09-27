@@ -1,20 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentValidation;
-using FluentValidation.Results;
-using System.Net.Http;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Application.Common.Exceptions;
+using FluentValidation;
 
-namespace Application.Common.Middleware
+namespace Api.Middleware
 {
 
-    internal class ExceptionHandlingMiddleware : IMiddleware
+    public class ExceptionHandlingMiddleware : IMiddleware
     {
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
@@ -31,11 +22,11 @@ namespace Application.Common.Middleware
         private static async Task HandleException(HttpContext context, Exception exception)
         {
             var statusCode = GetStatusCode(exception);
-            var response = new
+            var response = new ExceptionMessage
             {
-                status = statusCode,
-                detail = exception.Message,
-                errors = GetErrors(exception)
+                StatusCode = statusCode,
+                Message = exception.Message,
+                Errors = GetErrors(exception)
             };
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;
@@ -51,14 +42,16 @@ namespace Application.Common.Middleware
                 _ => StatusCodes.Status500InternalServerError
             };
 
-        private static IEnumerable GetErrors(Exception exception)
+        private static List<ErrorMessage> GetErrors(Exception exception)
         {
-            IEnumerable errors = null;
+            var errors = new List<ErrorMessage>();
             if (exception is ValidationException validationException)
             {
-                errors = validationException.Errors;
+                errors = validationException.Errors.Select(x => new ErrorMessage
+                    { PropertyName = x.PropertyName, Details = x.ErrorMessage }).ToList();
             }
             return errors;
         }
     }
+
 }
