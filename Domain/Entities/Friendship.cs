@@ -10,5 +10,5 @@ public class Friendship
     public Guid InviteeId { get; set;}
     public User Invitee { get; set; }
     public FriendshipStatus FriendshipStatus { get; set; }
-    public DateTime StatusDateTimeUtc { get; set; }
+    public DateTime StatusDateTimeUtc { get; set; } = DateTime.UtcNow;
 }

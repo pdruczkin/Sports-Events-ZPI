@@ -12,7 +12,6 @@ public class CreateMeetingCommand : IRequest<string>, IMappable<Meeting>
 {
     public string Title { get; set; }
     public string Description { get; set; }
-    public DateTime Created { get; set; } = DateTime.UtcNow;
     public double Latitude { get; set; } // range: from -90 (South) to 90 (North)
     public double Longitude { get; set; } // range: from -180 (West) to 180 (East)
     public DateTime StartDateTimeUtc { get; set; }

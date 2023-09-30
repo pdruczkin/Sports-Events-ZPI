@@ -1,0 +1,16 @@
+using Application.Common.Models;
+using Application.Friends.Commands.SendFriendInvitation;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Api.Controllers
+{
+    public class FriendsController : ApiControllerBase
+    {
+        [HttpPost("invite/{username:string}")]
+        public async Task<ActionResult> JoinMeeting([FromRoute] string username)
+        {
+            await Mediator.Send(new SendFriendInvitationCommand() { Username = username });
+            return NoContent();
+        }
+    }
+}

@@ -3,7 +3,6 @@
 public enum FriendshipStatus
 {
     Invited,
-    Pending,
     Accepted,
     Rejected,
     Removed,
