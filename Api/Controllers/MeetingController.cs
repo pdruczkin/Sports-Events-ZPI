@@ -3,12 +3,14 @@ using Application.Meetings.Commands.CreateMeeting;
 using Application.Meetings.Queries.MeetingDetails.GetMeetingDetailsById;
 using Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
 using Application.Meetings.Queries.MeetingPin.GetMeetingPinDetailsById;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
     public class MeetingController : ApiControllerBase
     {
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<MeetingDetailsDto>> GetById(Guid id)
         {
@@ -23,7 +25,7 @@ namespace Api.Controllers
             return Created($"/api/Meeting/{newMeetingId}", null);
         }
 
-
+        [AllowAnonymous]
         [HttpGet("list")]
         public async Task<ActionResult<PagedResult<MeetingListItemDto>>> GetAllMeetingListItems([FromQuery] GetMeetingListItemsQuery request)
         {
@@ -31,6 +33,7 @@ namespace Api.Controllers
             return Ok(meetingListItemsDtos);
         }
 
+        [AllowAnonymous]
         [HttpGet("pin/{id}")]
         public async Task<ActionResult<MeetingPinDetailsDto>> GetPinDetailsById(Guid id)
         {
