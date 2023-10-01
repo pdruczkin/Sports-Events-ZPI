@@ -36,6 +36,11 @@ public class SendFriendInvitationCommandHandler : IRequestHandler<SendFriendInvi
             .FirstOrDefaultAsync(x => x.Username == request.Username, cancellationToken);        
         if (invitee is null) throw new AppException("User is not found");
 
+        if(inviter.Equals(invitee))
+        {
+            throw new AppException("User cannot invite themself");
+        }
+
         var currentFriendshipState = await _dbContext
             .Friendships
             .Where(x => (x.Inviter == inviter && x.Invitee == invitee)
