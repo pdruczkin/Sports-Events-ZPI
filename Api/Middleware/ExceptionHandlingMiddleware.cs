@@ -39,6 +39,7 @@ namespace Api.Middleware
                 ValidationException => StatusCodes.Status400BadRequest,
                 AppException => StatusCodes.Status400BadRequest,
                 UnauthorizedException => StatusCodes.Status401Unauthorized,
+                ForbidException => StatusCodes.Status403Forbidden,
                 _ => StatusCodes.Status500InternalServerError
             };
 

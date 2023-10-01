@@ -50,7 +50,7 @@ public class JoinMeetingCommandHandler : IRequestHandler<JoinMeetingCommand, Uni
         }
         else
         {
-            var foundParticipant = meeting.MeetingParticipants.SingleOrDefault(x => x.UserId == userId);
+            var foundParticipant = meeting.MeetingParticipants.SingleOrDefault(x => x.ParticipantId == userId);
 
             if (foundParticipant is null || meeting.StartDateTimeUtc < _dateTimeProvider.UtcNow || foundParticipant.InvitationStatus != InvitationStatus.Pending)
             {

@@ -8,7 +8,7 @@ public class MeetingParticipantConfiguration : IEntityTypeConfiguration<MeetingP
 {
     public void Configure(EntityTypeBuilder<MeetingParticipant> builder)
     {
-        builder.HasKey(x => new { x.UserId, x.MeetingId });
+        builder.HasKey(x => new { UserId = x.ParticipantId, x.MeetingId });
 
         builder
             .HasOne(x => x.Meeting)
