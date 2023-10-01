@@ -16,12 +16,10 @@ public class SendFriendInvitationCommandHandler : IRequestHandler<SendFriendInvi
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly IUserContextService _userContextService;
-    private readonly IDateTimeProvider _dateTimeProvider;
-    public SendFriendInvitationCommandHandler(IApplicationDbContext dbContext, IUserContextService userContextService, IDateTimeProvider dateTimeProvider)
+    public SendFriendInvitationCommandHandler(IApplicationDbContext dbContext, IUserContextService userContextService)
     {
         _dbContext = dbContext;
         _userContextService = userContextService;
-        _dateTimeProvider = dateTimeProvider;
     }
     
     public async Task<Unit> Handle(SendFriendInvitationCommand request, CancellationToken cancellationToken)
@@ -38,23 +36,26 @@ public class SendFriendInvitationCommandHandler : IRequestHandler<SendFriendInvi
             .FirstOrDefaultAsync(x => x.Username == request.Username, cancellationToken);        
         if (invitee is null) throw new AppException("User is not found");
 
-        var currentFrienshipStatus = await _applicationDbContext
-            .Frienships
-            .Where((x => x.Inviter == inviter && x.Invitee == invitee)
-                    || (x => x.Inviter == invitee && x.Invitee == inviter))
+        var currentFriendshipState = await _dbContext
+            .Friendships
+            .Where(x => (x.Inviter == inviter && x.Invitee == invitee)
+                    || (x.Inviter == invitee && x.Invitee == inviter))
             .OrderByDescending(x => x.StatusDateTimeUtc)
             .FirstOrDefaultAsync();
 
-        if(currentFrienshipStatus == FriendshipStatus.Invited)
-            throw new AppException("User is alredy invited");
+        if(currentFriendshipState != null)
+        {
+            if(currentFriendshipState.FriendshipStatus == FriendshipStatus.Invited)
+                throw new AppException("User is alredy invited");
 
-        if(currentFrienshipStatus == FriendshipStatus.Accepted)
-            throw new AppException("User is already a friend");
+            if(currentFriendshipState.FriendshipStatus == FriendshipStatus.Accepted)
+                throw new AppException("User is already a friend");
 
-        if(frienshipHistory.FirstOrDefault(x => x.FriendshipStatus == FriendshipStatus.Blocked))
-            throw new AppException("User is blocked");
+            if(currentFriendshipState.FriendshipStatus == FriendshipStatus.Blocked)
+                throw new AppException("User is blocked");
+        }
         
-        _applicationDbContext.Friendships.Add(new Friendship
+        _dbContext.Friendships.Add(new Friendship
         {
             Inviter = inviter,
             Invitee = invitee,
