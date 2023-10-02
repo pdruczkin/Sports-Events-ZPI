@@ -1,8 +1,9 @@
 using Api;
+using Api.Middleware;
 using Application;
-using Application.Common.Middleware;
 using Infrastructure;
 using Infrastructure.Persistence;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

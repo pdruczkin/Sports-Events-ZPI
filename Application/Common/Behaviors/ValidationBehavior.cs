@@ -1,12 +1,5 @@
-﻿using Azure;
-using FluentValidation;
+﻿using FluentValidation;
 using MediatR;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Common.Behaviors
 {
@@ -30,8 +23,7 @@ namespace Application.Common.Behaviors
                 var validationResults =
                     await Task.WhenAll(_validators.Select(v => v.ValidateAsync(context, cancellationToken)));
                 var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null).ToList();
-                if (failures.Count != 0)
-                    throw new ValidationException(failures);
+                if (failures.Count != 0) throw new ValidationException(failures);
             }
 
             return await next();

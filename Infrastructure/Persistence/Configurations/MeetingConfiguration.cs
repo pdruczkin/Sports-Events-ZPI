@@ -20,10 +20,6 @@ namespace Infrastructure.Persistence.Configurations
 
             builder.HasOne(m => m.Organizer)
                 .WithMany(u => u.OrganizedEvents);
-
-           // builder.HasMany(e => e.Participants)
-           //     .WithMany(u => u.ParticipatedEvents);
-
         }
     }
 }

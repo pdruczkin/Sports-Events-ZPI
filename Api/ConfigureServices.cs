@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Application;
 using Application.Common.Models;
 using Microsoft.IdentityModel.Tokens;
 
@@ -46,8 +45,6 @@ public static class ConfigureServices
         });
         
         
-        
-
         return services;
     }
 }

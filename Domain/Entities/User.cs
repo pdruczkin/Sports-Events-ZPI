@@ -21,6 +21,9 @@ public class User
     
     public string? PasswordResetToken { get; set; }
     public DateTime? ResetTokenExpires { get; set; }
+
+    public ICollection<Meeting> OrganizedEvents { get; set; } = new List<Meeting>();
     
-    public ICollection<Meeting> OrganizedEvents { get; set; }
+    public ICollection<MeetingParticipant> MeetingParticipants { get; } = new List<MeetingParticipant>();
+    
 }
