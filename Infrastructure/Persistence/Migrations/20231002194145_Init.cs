@@ -89,6 +89,30 @@ namespace Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "MeetingParticipant",
+                columns: table => new
+                {
+                    MeetingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ParticipantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    InvitationStatus = table.Column<int>(type: "int", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MeetingParticipant", x => new { x.ParticipantId, x.MeetingId });
+                    table.ForeignKey(
+                        name: "FK_MeetingParticipant_Meetings_MeetingId",
+                        column: x => x.MeetingId,
+                        principalTable: "Meetings",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_MeetingParticipant_Users_ParticipantId",
+                        column: x => x.ParticipantId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Friendships_InviteeId",
                 table: "Friendships",
@@ -98,6 +122,11 @@ namespace Infrastructure.Migrations
                 name: "IX_Friendships_InviterId",
                 table: "Friendships",
                 column: "InviterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MeetingParticipant_MeetingId",
+                table: "MeetingParticipant",
+                column: "MeetingId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Meetings_OrganizerId",
@@ -110,6 +139,9 @@ namespace Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Friendships");
+
+            migrationBuilder.DropTable(
+                name: "MeetingParticipant");
 
             migrationBuilder.DropTable(
                 name: "Meetings");

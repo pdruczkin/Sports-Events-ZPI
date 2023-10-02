@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231001211858_Init")]
+    [Migration("20231002194145_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -102,6 +102,27 @@ namespace Infrastructure.Migrations
                     b.ToTable("Meetings");
                 });
 
+            modelBuilder.Entity("Domain.Entities.MeetingParticipant", b =>
+                {
+                    b.Property<Guid>("ParticipantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MeetingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("InvitationStatus")
+                        .HasColumnType("int");
+
+                    b.HasKey("ParticipantId", "MeetingId");
+
+                    b.HasIndex("MeetingId");
+
+                    b.ToTable("MeetingParticipant");
+                });
+
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -188,11 +209,37 @@ namespace Infrastructure.Migrations
                     b.Navigation("Organizer");
                 });
 
+            modelBuilder.Entity("Domain.Entities.MeetingParticipant", b =>
+                {
+                    b.HasOne("Domain.Entities.Meeting", "Meeting")
+                        .WithMany("MeetingParticipants")
+                        .HasForeignKey("MeetingId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.User", "Participant")
+                        .WithMany("MeetingParticipants")
+                        .HasForeignKey("ParticipantId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Meeting");
+
+                    b.Navigation("Participant");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Meeting", b =>
+                {
+                    b.Navigation("MeetingParticipants");
+                });
+
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Navigation("AsInvitee");
 
                     b.Navigation("AsInviter");
+
+                    b.Navigation("MeetingParticipants");
 
                     b.Navigation("OrganizedEvents");
                 });
