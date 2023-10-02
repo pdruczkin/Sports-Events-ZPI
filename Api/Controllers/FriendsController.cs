@@ -1,14 +1,20 @@
-﻿using Application.Common.Models;
-using Application.Friends.Commands.AcceptFriendInvitation;
+﻿using Application.Friends.Commands.AcceptFriendInvitation;
 using Application.Friends.Commands.SendFriendInvitation;
 using Application.Friends.Queries.GetFriendInvitations;
-using Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
+using Application.Friends.Queries.GetFriendsList;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
     public class FriendsController : ApiControllerBase
     {
+        [HttpGet]
+        public async Task<ActionResult<List<FriendInvitationsDto>>> GetFriendsList()
+        {
+            var friendsUsernamesDtos = await Mediator.Send(new GetFriendsListQuery());
+            return Ok(friendsUsernamesDtos);
+        }
+
         [HttpGet("invitations")]
         public async Task<ActionResult<List<FriendInvitationsDto>>> GetFriendInvitations()
         {

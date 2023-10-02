@@ -17,14 +17,12 @@ public class GetFriendInvitationsQuery : IRequest<List<FriendInvitationsDto>>
 
 public class GetFriendInvitationsQueryHandler : IRequestHandler<GetFriendInvitationsQuery, List<FriendInvitationsDto>>
 {
-    public IApplicationDbContext _applicationDbContext { get; set; }
-    public IMapper _mapper { get; set; }
+    private readonly IApplicationDbContext _applicationDbContext;
     private readonly IUserContextService _userContextService;
 
-    public GetFriendInvitationsQueryHandler(IApplicationDbContext applicationDbContext, IMapper mapper, IUserContextService userContextService)
+    public GetFriendInvitationsQueryHandler(IApplicationDbContext applicationDbContext, IUserContextService userContextService)
     {
         _applicationDbContext = applicationDbContext;
-        _mapper = mapper;
         _userContextService = userContextService;
     }
     public async Task<List<FriendInvitationsDto>> Handle(GetFriendInvitationsQuery request, CancellationToken cancellationToken)
