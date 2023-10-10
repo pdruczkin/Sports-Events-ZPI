@@ -1,4 +1,5 @@
-﻿using Application.Account.Commands.ForgotPassword;
+﻿using Application.Account.Commands.DeleteAccount;
+using Application.Account.Commands.ForgotPassword;
 using Application.Account.Commands.LoginUser;
 using Application.Account.Commands.RegisterUser;
 using Application.Account.Commands.ResetPassword;

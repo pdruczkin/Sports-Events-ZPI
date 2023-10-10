@@ -1,7 +1,7 @@
-﻿using Application.UserDetails.Commands.ChangePassword;
+﻿using Application.Account.Commands.DeleteAccount;
+using Application.UserDetails.Commands.ChangePassword;
 using Application.UserDetails.Commands.ChangeUserDetails;
 using Application.UserDetails.Queries.GetUserDetails;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -30,6 +30,14 @@ public class UserDetailsController : ApiControllerBase
         await Mediator.Send(command);
         
         return Ok();
+    }
+    
+    [HttpDelete]
+    public async Task<ActionResult> DeleteAccount()
+    {
+        await Mediator.Send(new DeleteAccountCommand());
+
+        return NoContent();
     }
     
 }
