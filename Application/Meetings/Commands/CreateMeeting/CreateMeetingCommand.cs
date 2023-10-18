@@ -19,6 +19,8 @@ public class CreateMeetingCommand : IRequest<string>, IMappable<Meeting>
     public MeetingVisibility Visibility { get; set; } = MeetingVisibility.Private;
     public SportsDiscipline SportsDiscipline { get; set; } = SportsDiscipline.Other;
     public Difficulty Difficulty { get; set; } = Difficulty.Amateur;
+    public int MaxParticipantsQuantity { get; set; } = 100;
+    public int MinParticipantsAge { get; set; } = 1;
 }
 
 public class CreateMeetingCommandHandler : IRequestHandler<CreateMeetingCommand, string>

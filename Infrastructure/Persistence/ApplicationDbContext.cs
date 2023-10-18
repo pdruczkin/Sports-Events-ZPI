@@ -10,7 +10,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<Meeting> Meetings => Set<Meeting>();
     public DbSet<Friendship> Friendships => Set<Friendship>();
-
+    public DbSet<MeetingParticipant> MeetingParticipants => Set<MeetingParticipant>();
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
 

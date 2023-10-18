@@ -15,6 +15,9 @@ public class MeetingListItemDto : IMappable<Meeting>
     public DateTime EndDateTimeUtc { get; set; }
     public SportsDiscipline SportsDiscipline { get; set; }
     public Difficulty Difficulty { get; set; }
+    public int MaxParticipantsQuantity { get; set; }
+    public int CurrentParticipantsQuantity { get; set; }
+    public int MinParticipantsAge { get; set; }
 
     public string OrganizerUsername { get; set; }
 
