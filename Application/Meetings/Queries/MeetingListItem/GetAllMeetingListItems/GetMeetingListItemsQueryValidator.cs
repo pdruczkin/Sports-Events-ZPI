@@ -8,7 +8,7 @@ public class GetMeetingListItemsQueryValidator : AbstractValidator<GetMeetingLis
 {
     private int[] allowedPageSizes = new[] { 10, 30, 60, 120 };
     private string[] allowedSortByColumnNames =
-        { nameof(Meeting.StartDateTimeUtc), nameof(Meeting.Difficulty) };
+        { nameof(Meeting.StartDateTimeUtc), nameof(Meeting.Difficulty), nameof(Meeting.MaxParticipantsQuantity) };
 
     public GetMeetingListItemsQueryValidator()
     {

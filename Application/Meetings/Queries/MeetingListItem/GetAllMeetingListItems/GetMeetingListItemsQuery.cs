@@ -20,6 +20,9 @@ public class GetMeetingListItemsQuery : IRequest<PagedResult<MeetingListItemDto>
     public SportsDiscipline? SportsDiscipline { get; set; }
     public Difficulty? Difficulty { get; set; }
     public MeetingVisibility? MeetingVisibility { get; set; }
+    public int? MaxParticipantsQuantity { get; set; }
+    public int? CurrentParticipantsQuantity { get; set; }
+    public int? MinParticipantsAge { get; set; }
     public string? TitleSearchPhrase { get; set; }
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
@@ -53,7 +56,8 @@ public class GetAllMeetingListItemsQueryHandler : IRequestHandler<GetMeetingList
             var columnsSelectors = new Dictionary<string, Expression<Func<Meeting, object>>>
                 {
                     { nameof(Meeting.StartDateTimeUtc), r => r.StartDateTimeUtc },
-                    { nameof(Meeting.Difficulty), r => r.Difficulty }
+                    { nameof(Meeting.Difficulty), r => r.Difficulty },
+                    { nameof(Meeting.MaxParticipantsQuantity), r => r.MaxParticipantsQuantity }
                 };
 
             var selectedColumn = columnsSelectors[request.SortBy];
@@ -115,9 +119,19 @@ public class GetAllMeetingListItemsQueryHandler : IRequestHandler<GetMeetingList
                                     .Where(x => request.SportsDiscipline == null || x.SportsDiscipline == request.SportsDiscipline)
                                     .Where(x => request.Difficulty == null || x.Difficulty == request.Difficulty)
                                     .Where(x => request.MeetingVisibility == null || x.Visibility == request.MeetingVisibility)
+                                    .Where(x => request.MaxParticipantsQuantity == null || x.MaxParticipantsQuantity <= request.MaxParticipantsQuantity)
+                                    .Where(x => request.CurrentParticipantsQuantity == null || CountCurrentParticipantsQuantity(x.Id) <= request.CurrentParticipantsQuantity)
+                                    .Where(x => request.MinParticipantsAge == null || x.MinParticipantsAge >= request.MinParticipantsAge)
                                     .Where(x => request.TitleSearchPhrase == null || x.Title.ToLower().Contains(request.TitleSearchPhrase.ToLower()));
 
         return filteredMeetingsIQueryable;
     }
 
+    private int CountCurrentParticipantsQuantity(Guid meetingId)
+    {
+        var currentParticipantsQuantity = 1 + _applicationDbContext // 1 - meeting's organizer is also a participant
+            .MeetingParticipants
+            .Count(mp => mp.MeetingId == meetingId && mp.InvitationStatus == InvitationStatus.Accepted);
+        return currentParticipantsQuantity;
+    }
 }
