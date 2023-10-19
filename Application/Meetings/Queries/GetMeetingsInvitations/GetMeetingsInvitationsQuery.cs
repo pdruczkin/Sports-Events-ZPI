@@ -36,14 +36,15 @@ public class
         var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
         if (user is null) throw new AppException("User is not found");
 
-        var meetingParticipants = await _dbContext
+        var meetings = await _dbContext
             .Meetings
             .Include(x => x.MeetingParticipants)
+            .Include(x => x.Organizer)
             .Where(x => x.StartDateTimeUtc > _dateTimeProvider.UtcNow)
             .Where(x => x.MeetingParticipants.Any(mp =>
                 mp.ParticipantId == userId && mp.InvitationStatus == InvitationStatus.Pending))
             .ToListAsync(cancellationToken);
 
-        return _mapper.Map<List<MeetingInvitationsDto>>(meetingParticipants);
+        return _mapper.Map<List<MeetingInvitationsDto>>(meetings);
     }
 }
