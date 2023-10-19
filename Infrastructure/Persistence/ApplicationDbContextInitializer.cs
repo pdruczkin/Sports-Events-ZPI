@@ -43,7 +43,7 @@ public class ApplicationDbContextInitializer
                 DateOfBirth = new DateTime(2001, 10, 10),
                 Gender = Gender.Male,
                 Role = Role.Administrator,
-                VerifiedAt = _dateTimeProvider.UtcNow
+                VerifiedAt = _dateTimeProvider.UtcNow,
             };
             var userAdminPasswordHash = _passwordHasher.HashPassword(userAdmin, "AdminPassword1");
             userAdmin.PasswordHash = userAdminPasswordHash;
@@ -83,6 +83,24 @@ public class ApplicationDbContextInitializer
             await _dbContext.Users.AddAsync(testUser);
 
 
+            var friendshipAccepted = new Friendship()
+            {
+                Inviter = userAdmin,
+                Invitee = testUser,
+                FriendshipStatus = FriendshipStatus.Accepted
+            };
+            
+            await _dbContext.Friendships.AddAsync(friendshipAccepted);
+            
+            var friendshipPending = new Friendship()
+            {
+                Inviter = testUser,
+                Invitee = normalUser,
+                FriendshipStatus = FriendshipStatus.Invited
+            };
+            await _dbContext.Friendships.AddAsync(friendshipPending);
+            
+            
             var utcDate = TrimSeconds(_dateTimeProvider.UtcNow);
             
             var testMeeting = new Meeting
@@ -93,7 +111,22 @@ public class ApplicationDbContextInitializer
                 EndDateTimeUtc = utcDate.AddDays(14).AddHours(2),
                 Difficulty = Difficulty.Amateur,
                 SportsDiscipline = SportsDiscipline.Basketball,
-                Visibility = MeetingVisibility.Public
+                Visibility = MeetingVisibility.Public,
+                Organizer = userAdmin,
+                MeetingParticipants = new List<MeetingParticipant>
+                {
+                    new()
+                    {
+                        Participant = testUser,
+                        InvitationStatus = InvitationStatus.Pending
+                    },
+                    new()
+                    {
+                        Participant = normalUser,
+                        InvitationStatus = InvitationStatus.Accepted
+                    }
+                }
+                
             };
 
             await _dbContext.Meetings.AddAsync(testMeeting);
@@ -106,7 +139,8 @@ public class ApplicationDbContextInitializer
                 EndDateTimeUtc = utcDate.AddDays(14).AddHours(2).AddMinutes(15),
                 Difficulty = Difficulty.Professional,
                 SportsDiscipline = SportsDiscipline.Football,
-                Visibility = MeetingVisibility.Public
+                Visibility = MeetingVisibility.Public,
+                Organizer = testUser
             };
             
             await _dbContext.Meetings.AddAsync(testMeetingEmpty);
@@ -119,7 +153,21 @@ public class ApplicationDbContextInitializer
                 EndDateTimeUtc = utcDate.AddDays(14).AddHours(7),
                 Difficulty = Difficulty.Intermediate,
                 SportsDiscipline = SportsDiscipline.Other,
-                Visibility = MeetingVisibility.Private
+                Visibility = MeetingVisibility.Private,
+                Organizer = testUser,
+                MeetingParticipants = new List<MeetingParticipant>
+                {
+                    new()
+                    {
+                        Participant = userAdmin,
+                        InvitationStatus = InvitationStatus.Pending
+                    },
+                    new()
+                    {
+                        Participant = normalUser,
+                        InvitationStatus = InvitationStatus.Pending
+                    }
+                }
             };
 
             await _dbContext.Meetings.AddAsync(testMeetingPrivate);
@@ -128,7 +176,7 @@ public class ApplicationDbContextInitializer
         await _dbContext.SaveChangesAsync();
     }
 
-    public static DateTime TrimSeconds(DateTime dateTime)
+    private static DateTime TrimSeconds(DateTime dateTime)
     {
         return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, dateTime.Minute, 0, dateTime.Kind);
     }
