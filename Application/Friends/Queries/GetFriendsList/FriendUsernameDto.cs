@@ -9,4 +9,6 @@ namespace Application.Friends.Queries.GetFriendsList;
 public class FriendUsernameDto
 {
     public string FriendUsername { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
 }

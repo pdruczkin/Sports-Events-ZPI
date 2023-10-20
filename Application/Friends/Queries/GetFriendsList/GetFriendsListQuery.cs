@@ -40,12 +40,16 @@ public class GetFriendListQueryHandler : IRequestHandler<GetFriendsListQuery, Li
             .Select(group => new
             {
                 InviterUsername = group.Key.Username,
+                InviterFirstName = group.Key.FirstName,
+                InviterLastName = group.Key.LastName,
                 CurrentFriendshipState = group.OrderByDescending(x => x.StatusDateTimeUtc).First()
             })
             .Where(x => x.CurrentFriendshipState.FriendshipStatus == FriendshipStatus.Accepted)
             .Select(x => new FriendUsernameDto
             {
-                FriendUsername = x.InviterUsername
+                FriendUsername = x.InviterUsername,
+                FirstName = x.InviterFirstName,
+                LastName = x.InviterLastName
             });
 
         var friendsAsInviter = user
@@ -53,13 +57,17 @@ public class GetFriendListQueryHandler : IRequestHandler<GetFriendsListQuery, Li
             .GroupBy(x => x.Invitee)
             .Select(group => new
             {
-                InviterUsername = group.Key.Username,
+                InviteeUsername = group.Key.Username,
+                InviteeFirstName = group.Key.FirstName,
+                InviteeLastName = group.Key.LastName,
                 CurrentFriendshipState = group.OrderByDescending(x => x.StatusDateTimeUtc).First()
             })
             .Where(x => x.CurrentFriendshipState.FriendshipStatus == FriendshipStatus.Accepted)
             .Select(x => new FriendUsernameDto
             {
-                FriendUsername = x.InviterUsername
+                FriendUsername = x.InviteeUsername,
+                FirstName = x.InviteeFirstName,
+                LastName = x.InviteeLastName
             });
 
         var allFriends = friendsAsInvitee
