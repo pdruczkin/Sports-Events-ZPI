@@ -1,4 +1,5 @@
 ﻿using Application.Friends.Commands.AcceptFriendInvitation;
+using Application.Friends.Commands.BlockUser;
 using Application.Friends.Commands.SendFriendInvitation;
 using Application.Friends.Queries.GetFriendInvitations;
 using Application.Friends.Queries.GetFriendsList;
@@ -31,6 +32,13 @@ namespace Api.Controllers
 
         [HttpPost("accept")]
         public async Task<ActionResult> AcceptFriendInvitation([FromBody] AcceptFriendInvitationCommand command)
+        {
+            await Mediator.Send(command);
+            return NoContent();
+        }
+
+        [HttpPost("block")]
+        public async Task<ActionResult> BlockUser([FromBody] BlockUserCommand command)
         {
             await Mediator.Send(command);
             return NoContent();

@@ -5,6 +5,5 @@ public enum FriendshipStatus
     Invited,
     Accepted,
     Rejected,
-    Removed,
     Blocked
 }

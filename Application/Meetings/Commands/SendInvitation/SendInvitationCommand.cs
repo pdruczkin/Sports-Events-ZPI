@@ -51,7 +51,7 @@ public class SendInvitationCommandHandler : IRequestHandler<SendInvitationComman
 
         var currentParticipantsQuantity = 1 + await _dbContext // 1 - meeting's organizer is also a participant
             .MeetingParticipants
-            .CountAsync(mp => mp.MeetingId == meeting.Id && mp.InvitationStatus == InvitationStatus.Accepted);
+            .CountAsync(mp => mp.MeetingId == meeting.Id && mp.InvitationStatus == InvitationStatus.Accepted, cancellationToken: cancellationToken);
 
         if (currentParticipantsQuantity >= meeting.MaxParticipantsQuantity)
             throw new AppException("Max participants quantity reached, new invitations are not allowed.");
