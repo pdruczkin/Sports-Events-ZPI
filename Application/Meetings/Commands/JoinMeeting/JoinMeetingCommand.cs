@@ -42,7 +42,6 @@ public class JoinMeetingCommandHandler : IRequestHandler<JoinMeetingCommand, Uni
         if (meeting.StartDateTimeUtc < _dateTimeProvider.UtcNow)
             throw new AppException("Joining to meeting is possible before meeting start time.");
         
-        
         var userAge = _dateTimeProvider.CalculateAge(user.DateOfBirth);
         var isUserAgeCorrect = userAge >= meeting.MinParticipantsAge;
 
