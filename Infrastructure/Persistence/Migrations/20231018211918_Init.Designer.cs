@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231002194145_Init")]
+    [Migration("20231018211918_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -78,6 +78,12 @@ namespace Infrastructure.Migrations
                     b.Property<decimal>("Longitude")
                         .HasColumnType("decimal(9,6)");
 
+                    b.Property<int>("MaxParticipantsQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MinParticipantsAge")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("OrganizerId")
                         .HasColumnType("uniqueidentifier");
 
@@ -120,7 +126,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("MeetingId");
 
-                    b.ToTable("MeetingParticipant");
+                    b.ToTable("MeetingParticipants");
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>

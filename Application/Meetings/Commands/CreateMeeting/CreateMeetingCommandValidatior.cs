@@ -11,7 +11,7 @@ public class CreateMeetingCommandValidatior :AbstractValidator<CreateMeetingComm
             .MaximumLength(256);
 
         RuleFor(x => x.Description)
-            .NotEmpty()
+            .NotNull()
             .MaximumLength(8192);
 
         RuleFor(x => x.Latitude)
@@ -49,6 +49,18 @@ public class CreateMeetingCommandValidatior :AbstractValidator<CreateMeetingComm
         RuleFor(x => x.Difficulty)
             .NotNull()
             .IsInEnum();
+
+        RuleFor(x => x.MaxParticipantsQuantity)
+            .GreaterThanOrEqualTo(1)
+            .WithMessage("Min participants quantity is 1.")
+            .LessThanOrEqualTo(100)
+            .WithMessage("Max participants quantity is 100.");
+        
+        RuleFor(x => x.MinParticipantsAge)
+            .GreaterThanOrEqualTo(1)
+            .WithMessage("Min participants age is 1.")
+            .LessThanOrEqualTo(130)
+            .WithMessage("Max participants age is 130.");
 
     }
 }

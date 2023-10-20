@@ -76,6 +76,8 @@ namespace Infrastructure.Migrations
                     Visibility = table.Column<int>(type: "int", nullable: false),
                     SportsDiscipline = table.Column<int>(type: "int", nullable: false),
                     Difficulty = table.Column<int>(type: "int", nullable: false),
+                    MaxParticipantsQuantity = table.Column<int>(type: "int", nullable: false),
+                    MinParticipantsAge = table.Column<int>(type: "int", nullable: false),
                     OrganizerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -90,7 +92,7 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MeetingParticipant",
+                name: "MeetingParticipants",
                 columns: table => new
                 {
                     MeetingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -100,14 +102,14 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MeetingParticipant", x => new { x.ParticipantId, x.MeetingId });
+                    table.PrimaryKey("PK_MeetingParticipants", x => new { x.ParticipantId, x.MeetingId });
                     table.ForeignKey(
-                        name: "FK_MeetingParticipant_Meetings_MeetingId",
+                        name: "FK_MeetingParticipants_Meetings_MeetingId",
                         column: x => x.MeetingId,
                         principalTable: "Meetings",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_MeetingParticipant_Users_ParticipantId",
+                        name: "FK_MeetingParticipants_Users_ParticipantId",
                         column: x => x.ParticipantId,
                         principalTable: "Users",
                         principalColumn: "Id");
@@ -124,8 +126,8 @@ namespace Infrastructure.Migrations
                 column: "InviterId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MeetingParticipant_MeetingId",
-                table: "MeetingParticipant",
+                name: "IX_MeetingParticipants_MeetingId",
+                table: "MeetingParticipants",
                 column: "MeetingId");
 
             migrationBuilder.CreateIndex(
@@ -141,7 +143,7 @@ namespace Infrastructure.Migrations
                 name: "Friendships");
 
             migrationBuilder.DropTable(
-                name: "MeetingParticipant");
+                name: "MeetingParticipants");
 
             migrationBuilder.DropTable(
                 name: "Meetings");

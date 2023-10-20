@@ -39,6 +39,19 @@ public class JoinMeetingCommandHandler : IRequestHandler<JoinMeetingCommand, Uni
         
         if (meeting is null) throw new AppException("Meeting is not found");
 
+        var userAge = _dateTimeProvider.CalculateAge(user.DateOfBirth);
+        var isUserAgeCorrect = userAge >= meeting.MinParticipantsAge;
+
+        if (!isUserAgeCorrect)
+            throw new AppException("The user does not meet the meeting's min age requirements.");
+
+        var currentParticipantsQuantity = 1 + await _dbContext // 1 - meeting's organizer is also a participant
+            .MeetingParticipants
+            .CountAsync(mp => mp.MeetingId == meeting.Id && mp.InvitationStatus == InvitationStatus.Accepted);
+
+        if (currentParticipantsQuantity >= meeting.MaxParticipantsQuantity)
+            throw new AppException("Max participants quantity reached, joining not available.");
+
         if (meeting.Visibility == MeetingVisibility.Public)
         {
             meeting.MeetingParticipants.Add(new MeetingParticipant

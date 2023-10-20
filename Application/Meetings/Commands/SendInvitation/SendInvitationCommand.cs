@@ -17,13 +17,15 @@ public class SendInvitationCommandHandler : IRequestHandler<SendInvitationComman
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly IUserContextService _userContextService;
+    private readonly IDateTimeProvider _dateTimeProvider;
 
-    public SendInvitationCommandHandler(IApplicationDbContext dbContext, IUserContextService userContextService)
+    public SendInvitationCommandHandler(IApplicationDbContext dbContext, IUserContextService userContextService, IDateTimeProvider dateTimeProvider)
     {
         _dbContext = dbContext;
         _userContextService = userContextService;
+        _dateTimeProvider = dateTimeProvider;
     }
-    
+
     public async Task<Unit> Handle(SendInvitationCommand request, CancellationToken cancellationToken)
     {
         var userId = _userContextService.GetUserId;
@@ -39,11 +41,20 @@ public class SendInvitationCommandHandler : IRequestHandler<SendInvitationComman
             .FirstOrDefaultAsync(x => x.Id == request.MeetingId, cancellationToken: cancellationToken);
         if (meeting is null) throw new AppException("Meeting is not found");
 
-
         if (meeting.OrganizerId != userId) throw new ForbidException("Only organizer can invite new participants");
+
+        var newParticipantAge = _dateTimeProvider.CalculateAge(newParticipant.DateOfBirth);
+        var isnewParticipantAgeCorrect = newParticipantAge >= meeting.MinParticipantsAge;
         
-        if (meeting.MeetingParticipants.Any(x => x.ParticipantId == newParticipant.Id) || userId == newParticipant.Id)
+        if (meeting.MeetingParticipants.Any(x => x.ParticipantId == newParticipant.Id) || userId == newParticipant.Id || !isnewParticipantAgeCorrect)
             throw new AppException("The invitation can't be send");
+
+        var currentParticipantsQuantity = 1 + await _dbContext // 1 - meeting's organizer is also a participant
+            .MeetingParticipants
+            .CountAsync(mp => mp.MeetingId == meeting.Id && mp.InvitationStatus == InvitationStatus.Accepted);
+
+        if (currentParticipantsQuantity >= meeting.MaxParticipantsQuantity)
+            throw new AppException("Max participants quantity reached, new invitations are not allowed.");
 
         var newMeetingParticipant = new MeetingParticipant
         {
