@@ -36,48 +36,48 @@ public class ApplicationDbContextInitializer
         {
             var userAdmin = new User
             {
-                Email = "adminTest@zpi.email",
+                Email = "admin@zpi.email",
                 Username = "adminTest",
                 FirstName = "adminFirstName",
                 LastName = "adminLastName",
                 DateOfBirth = new DateTime(2001, 10, 10),
                 Gender = Gender.Male,
                 Role = Role.Administrator,
-                VerifiedAt = _dateTimeProvider.UtcNow,
+                VerifiedAt = _dateTimeProvider.UtcNow
             };
-            var userAdminPasswordHash = _passwordHasher.HashPassword(userAdmin, "AdminPassword1");
+            var userAdminPasswordHash = _passwordHasher.HashPassword(userAdmin, "Password1");
             userAdmin.PasswordHash = userAdminPasswordHash;
 
             await _dbContext.Users.AddAsync(userAdmin);
 
             var normalUser = new User
             {
-                Email = "test@zpi.email",
-                Username = "userTest",
-                FirstName = "userFirstName",
-                LastName = "userLastName",
+                Email = "normal@zpi.email",
+                Username = "normal",
+                FirstName = "normalFirstName",
+                LastName = "normalLastName",
                 DateOfBirth = new DateTime(2010, 10, 10),
                 Gender = Gender.Female,
                 Role = Role.User,
                 VerifiedAt = _dateTimeProvider.UtcNow
             };
-            var normalUserPasswordHash = _passwordHasher.HashPassword(normalUser, "userPassword1");
+            var normalUserPasswordHash = _passwordHasher.HashPassword(normalUser, "Password1");
             normalUser.PasswordHash = normalUserPasswordHash;
 
             await _dbContext.Users.AddAsync(normalUser);
 
             var testUser = new User
             {
-                Email = "testuser@zpi.email",
-                Username = "userTest",
-                FirstName = "userFirstName",
-                LastName = "userLastName",
+                Email = "test@zpi.email",
+                Username = "test",
+                FirstName = "testFirstName",
+                LastName = "testLastName",
                 DateOfBirth = new DateTime(2010, 10, 10),
                 Gender = Gender.Male,
                 Role = Role.User,
                 VerifiedAt = _dateTimeProvider.UtcNow
             };
-            var testUserPasswordHash = _passwordHasher.HashPassword(testUser, "testPassword1");
+            var testUserPasswordHash = _passwordHasher.HashPassword(testUser, "Password1");
             testUser.PasswordHash = testUserPasswordHash;
 
             await _dbContext.Users.AddAsync(testUser);
@@ -112,6 +112,8 @@ public class ApplicationDbContextInitializer
                 Difficulty = Difficulty.Amateur,
                 SportsDiscipline = SportsDiscipline.Basketball,
                 Visibility = MeetingVisibility.Public,
+                MaxParticipantsQuantity = 10,
+                MinParticipantsAge = 10,
                 Organizer = userAdmin,
                 MeetingParticipants = new List<MeetingParticipant>
                 {
@@ -140,7 +142,9 @@ public class ApplicationDbContextInitializer
                 Difficulty = Difficulty.Professional,
                 SportsDiscipline = SportsDiscipline.Football,
                 Visibility = MeetingVisibility.Public,
-                Organizer = testUser
+                Organizer = testUser,
+                MinParticipantsAge = 3,
+                MaxParticipantsQuantity = 3
             };
             
             await _dbContext.Meetings.AddAsync(testMeetingEmpty);
@@ -155,6 +159,8 @@ public class ApplicationDbContextInitializer
                 SportsDiscipline = SportsDiscipline.Other,
                 Visibility = MeetingVisibility.Private,
                 Organizer = testUser,
+                MaxParticipantsQuantity = 30,
+                MinParticipantsAge = 30,
                 MeetingParticipants = new List<MeetingParticipant>
                 {
                     new()
