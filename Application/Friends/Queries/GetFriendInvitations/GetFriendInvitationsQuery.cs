@@ -41,12 +41,14 @@ public class GetFriendInvitationsQueryHandler : IRequestHandler<GetFriendInvitat
             .GroupBy(x => x.Inviter)
             .Select(group => new
             {
+                InviterId = group.Key.Id,
                 InviterUsername = group.Key.Username,
                 CurrentFriendshipState = group.OrderByDescending(x => x.StatusDateTimeUtc).First()
             })
             .Where(x => x.CurrentFriendshipState.FriendshipStatus == FriendshipStatus.Invited)
             .Select(x => new FriendInvitationsDto
             {
+                InviterId = x.InviterId,
                 InviterUsername = x.InviterUsername,
                 InvitationDateTimeUtc = (x.CurrentFriendshipState.StatusDateTimeUtc)
             })

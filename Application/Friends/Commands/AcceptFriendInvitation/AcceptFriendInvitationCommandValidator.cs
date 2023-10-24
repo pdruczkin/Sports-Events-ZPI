@@ -7,7 +7,7 @@ public class AcceptFriendInvitationCommandValidator : AbstractValidator<AcceptFr
 {
     public AcceptFriendInvitationCommandValidator()
     {
-        RuleFor(x => x.Id)
+        RuleFor(x => x.InviterId)
             .NotEmpty();
     }
 }

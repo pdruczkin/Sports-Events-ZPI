@@ -9,7 +9,7 @@ namespace Application.Friends.Commands.AcceptFriendInvitation;
 
 public class AcceptFriendInvitationCommand : IRequest<Unit>
 {
-    public Guid Id { get; set; }
+    public Guid InviterId { get; set; }
 }
 
 public class AcceptFriendInvitationCommandHandler : IRequestHandler<AcceptFriendInvitationCommand, Unit>
@@ -33,8 +33,8 @@ public class AcceptFriendInvitationCommandHandler : IRequestHandler<AcceptFriend
 
         var inviter = await _dbContext
             .Users
-            .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
-        if (inviter is null) throw new AppException($"User {request.Id} is not found");
+            .FirstOrDefaultAsync(x => x.Id == request.InviterId, cancellationToken);
+        if (inviter is null) throw new AppException($"User {request.InviterId} is not found");
 
         var currentFriendshipState = await _dbContext
             .Friendships

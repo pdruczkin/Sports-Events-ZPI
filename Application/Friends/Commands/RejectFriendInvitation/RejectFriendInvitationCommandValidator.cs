@@ -6,7 +6,7 @@ public class RejectFriendInvitationCommandValidator : AbstractValidator<RejectFr
 {
     public RejectFriendInvitationCommandValidator()
     {
-        RuleFor(x => x.Id)
+        RuleFor(x => x.InviterId)
             .NotEmpty();
     }
 }
