@@ -5,31 +5,32 @@ using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Friends.Commands.AcceptFriendInvitation;
+namespace Application.Friends.Commands.RejectFriendInvitation;
 
-public class AcceptFriendInvitationCommand : IRequest<Unit>
+public class RejectFriendInvitationCommand : IRequest<Unit>
 {
     public Guid Id { get; set; }
 }
 
-public class AcceptFriendInvitationCommandHandler : IRequestHandler<AcceptFriendInvitationCommand, Unit>
+public class RejectFriendInvitationCommandHandler : IRequestHandler<RejectFriendInvitationCommand, Unit>
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly IUserContextService _userContextService;
-    public AcceptFriendInvitationCommandHandler(IApplicationDbContext dbContext, IUserContextService userContextService)
+
+    public RejectFriendInvitationCommandHandler(IApplicationDbContext dbContext, IUserContextService userContextService)
     {
         _dbContext = dbContext;
         _userContextService = userContextService;
     }
-
-    public async Task<Unit> Handle(AcceptFriendInvitationCommand request, CancellationToken cancellationToken)
+    
+    public async Task<Unit> Handle(RejectFriendInvitationCommand request, CancellationToken cancellationToken)
     {
         var userId = _userContextService.GetUserId;
 
         var user = await _dbContext
             .Users
             .FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
-        if (user is null) throw new AppException("Logged usser is not found");
+        if (user is null) throw new AppException("Logged user is not found");
 
         var inviter = await _dbContext
             .Users
@@ -60,7 +61,7 @@ public class AcceptFriendInvitationCommandHandler : IRequestHandler<AcceptFriend
         {
             Inviter = inviter,
             Invitee = user,
-            FriendshipStatus = FriendshipStatus.Accepted
+            FriendshipStatus = FriendshipStatus.Rejected
         });
 
         await _dbContext.SaveChangesAsync(cancellationToken);

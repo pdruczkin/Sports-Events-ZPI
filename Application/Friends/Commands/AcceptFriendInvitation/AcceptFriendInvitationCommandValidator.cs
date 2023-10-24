@@ -7,8 +7,7 @@ public class AcceptFriendInvitationCommandValidator : AbstractValidator<AcceptFr
 {
     public AcceptFriendInvitationCommandValidator()
     {
-        RuleFor(x => x.Username)
-            .NotEmpty()
-            .MaximumLength(256);
+        RuleFor(x => x.Id)
+            .NotEmpty();
     }
 }
