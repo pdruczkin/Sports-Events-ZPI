@@ -1,6 +1,7 @@
 ﻿using Application.Common.Models;
 using Application.Meetings.Commands.CreateMeeting;
 using Application.Meetings.Commands.JoinMeeting;
+using Application.Meetings.Commands.RejectInvitation;
 using Application.Meetings.Commands.SendInvitation;
 using Application.Meetings.Queries.GetMeetingsInvitations;
 using Application.Meetings.Queries.MeetingDetails.GetMeetingDetailsById;
@@ -49,6 +50,13 @@ namespace Api.Controllers
         public async Task<ActionResult> JoinMeeting([FromRoute] Guid meetingId)
         {
             await Mediator.Send(new JoinMeetingCommand() { MeetingId = meetingId });
+            return NoContent();
+        }
+        
+        [HttpPost("{meetingId:guid}/reject")]
+        public async Task<ActionResult> RejectMeetingInvitation([FromRoute] Guid meetingId)
+        {
+            await Mediator.Send(new RejectInvitationCommand() { MeetingId = meetingId });
             return NoContent();
         }
         

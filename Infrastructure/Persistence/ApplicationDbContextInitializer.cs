@@ -45,33 +45,33 @@ public class ApplicationDbContextInitializer
                 Role = Role.Administrator,
                 VerifiedAt = _dateTimeProvider.UtcNow,
             };
-            var userAdminPasswordHash = _passwordHasher.HashPassword(userAdmin, "Password1");
+            var userAdminPasswordHash = _passwordHasher.HashPassword(userAdmin, "AdminPassword1");
             userAdmin.PasswordHash = userAdminPasswordHash;
 
             await _dbContext.Users.AddAsync(userAdmin);
 
             var normalUser = new User
             {
-                Email = "normalUser@zpi.email",
-                Username = "userNormal",
-                FirstName = "userNormalFirstName",
-                LastName = "userNormalLastName",
+                Email = "normal@zpi.email",
+                Username = "normal",
+                FirstName = "normalFirstName",
+                LastName = "normalLastName",
                 DateOfBirth = new DateTime(2010, 10, 10),
                 Gender = Gender.Female,
                 Role = Role.User,
                 VerifiedAt = _dateTimeProvider.UtcNow
             };
-            var normalUserPasswordHash = _passwordHasher.HashPassword(normalUser, "Password1");
+            var normalUserPasswordHash = _passwordHasher.HashPassword(normalUser, "userPassword1");
             normalUser.PasswordHash = normalUserPasswordHash;
 
             await _dbContext.Users.AddAsync(normalUser);
 
             var testUser = new User
             {
-                Email = "testuser@zpi.email",
-                Username = "userTest",
-                FirstName = "userFirstName",
-                LastName = "userLastName",
+                Email = "test@zpi.email",
+                Username = "test",
+                FirstName = "testFirstName",
+                LastName = "testLastName",
                 DateOfBirth = new DateTime(2010, 10, 10),
                 Gender = Gender.Male,
                 Role = Role.User,
@@ -83,7 +83,7 @@ public class ApplicationDbContextInitializer
             await _dbContext.Users.AddAsync(testUser);
 
 
-            var friendshipAccepted = new Friendship
+            var friendshipAccepted = new Friendship()
             {
                 Inviter = userAdmin,
                 Invitee = testUser,
@@ -112,9 +112,9 @@ public class ApplicationDbContextInitializer
                 Difficulty = Difficulty.Amateur,
                 SportsDiscipline = SportsDiscipline.Basketball,
                 Visibility = MeetingVisibility.Public,
+                MaxParticipantsQuantity = 10,
+                MinParticipantsAge = 10,
                 Organizer = userAdmin,
-                MinParticipantsAge = 5,
-                MaxParticipantsQuantity = 2,
                 MeetingParticipants = new List<MeetingParticipant>
                 {
                     new()
@@ -143,8 +143,8 @@ public class ApplicationDbContextInitializer
                 SportsDiscipline = SportsDiscipline.Football,
                 Visibility = MeetingVisibility.Public,
                 Organizer = testUser,
-                MinParticipantsAge = 10,
-                MaxParticipantsQuantity = 20
+                MinParticipantsAge = 3,
+                MaxParticipantsQuantity = 3
             };
             
             await _dbContext.Meetings.AddAsync(testMeetingEmpty);
@@ -159,8 +159,8 @@ public class ApplicationDbContextInitializer
                 SportsDiscipline = SportsDiscipline.Other,
                 Visibility = MeetingVisibility.Private,
                 Organizer = testUser,
-                MinParticipantsAge = 18,
-                MaxParticipantsQuantity = 100,
+                MaxParticipantsQuantity = 30,
+                MinParticipantsAge = 30,
                 MeetingParticipants = new List<MeetingParticipant>
                 {
                     new()

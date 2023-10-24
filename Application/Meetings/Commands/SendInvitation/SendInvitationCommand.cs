@@ -35,6 +35,14 @@ public class SendInvitationCommandHandler : IRequestHandler<SendInvitationComman
         var newParticipant = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == request.NewParticipantId, cancellationToken);
         if (newParticipant is null) throw new AppException("Participant is not found");
         
+        var friendshipWithOrganizer = await _dbContext.Friendships
+            .Where(x => x.InviterId == userId && x.InviteeId == newParticipant.Id)
+            .OrderByDescending(x => x.StatusDateTimeUtc)
+            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+        
+        if(friendshipWithOrganizer is not null && friendshipWithOrganizer.FriendshipStatus == FriendshipStatus.Blocked) 
+            throw new AppException("Selected user is blocked, inviting is prohibited."); 
+        
         var meeting = await _dbContext
             .Meetings
             .Include(x => x.MeetingParticipants)
@@ -44,18 +52,28 @@ public class SendInvitationCommandHandler : IRequestHandler<SendInvitationComman
         if (meeting.OrganizerId != userId) throw new ForbidException("Only organizer can invite new participants");
 
         var newParticipantAge = _dateTimeProvider.CalculateAge(newParticipant.DateOfBirth);
-        var isnewParticipantAgeCorrect = newParticipantAge >= meeting.MinParticipantsAge;
+        var isNewParticipantAgeCorrect = newParticipantAge >= meeting.MinParticipantsAge;
         
-        if (meeting.MeetingParticipants.Any(x => x.ParticipantId == newParticipant.Id) || userId == newParticipant.Id || !isnewParticipantAgeCorrect)
-            throw new AppException("The invitation can't be send");
+        if(meeting.MeetingParticipants.Any(x => x.ParticipantId == newParticipant.Id && x.InvitationStatus is InvitationStatus.Accepted or InvitationStatus.Pending))
+            throw new AppException("The invitation can't be send again");
+        
+        if(userId == newParticipant.Id) throw new AppException("You can't invite yourself");
 
+        if(!isNewParticipantAgeCorrect) throw new AppException("The User doesn't meet the required age restriction");
+        
         var currentParticipantsQuantity = 1 + await _dbContext // 1 - meeting's organizer is also a participant
             .MeetingParticipants
-            .CountAsync(mp => mp.MeetingId == meeting.Id && mp.InvitationStatus == InvitationStatus.Accepted);
+            .CountAsync(mp => mp.MeetingId == meeting.Id && mp.InvitationStatus == InvitationStatus.Accepted, cancellationToken: cancellationToken);
 
         if (currentParticipantsQuantity >= meeting.MaxParticipantsQuantity)
             throw new AppException("Max participants quantity reached, new invitations are not allowed.");
 
+        var foundParticipation = meeting.MeetingParticipants.FirstOrDefault(x => x.ParticipantId == newParticipant.Id);
+        if (foundParticipation is not null)
+        {
+            _dbContext.MeetingParticipants.Remove(foundParticipation);
+        }
+        
         var newMeetingParticipant = new MeetingParticipant
         {
             MeetingId = meeting.Id,

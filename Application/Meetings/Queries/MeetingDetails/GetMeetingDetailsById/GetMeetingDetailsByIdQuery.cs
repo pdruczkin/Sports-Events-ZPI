@@ -21,21 +21,22 @@ public class GetMeetingDetailsByIdQueryHandler : IRequestHandler<GetMeetingDetai
         _dbContext = dbContext;
         _mapper = mapper;
     }
-    public void Mapping(Profile profile)
-    {
-        profile.CreateMap<Meeting, MeetingDetailsDto>()
-            .ForMember(dto => dto.OrganizerUsername, o => o.MapFrom(m => m.Organizer.Username));
-    }
-
+    
     public async Task<MeetingDetailsDto> Handle(GetMeetingDetailsByIdQuery request, CancellationToken cancellationToken)
     {
         var meetingDetails = await _dbContext
                             .Meetings
                             .Include(x => x.Organizer)
+                            .Include(x => x.MeetingParticipants).ThenInclude(x => x.Participant)
                             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
-
+        
         var meetingDetailsDto = _mapper.Map<MeetingDetailsDto>(meetingDetails);
 
+        var participants = meetingDetails.MeetingParticipants.Select(x => new UserIdentityDto
+            { Id = x.Participant.Id, Username = x.Participant.Username }).ToList();
+
+        meetingDetailsDto.MeetingParticipants = participants;
+        
         return meetingDetailsDto;
     }
 }

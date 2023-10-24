@@ -1,4 +1,5 @@
 ﻿using Application.Common.Mappings;
+using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 
@@ -21,5 +22,12 @@ public class MeetingDetailsDto : IMappable<Meeting>
     public int CurrentParticipantsQuantity { get; set; }
     public int MinParticipantsAge { get; set; }
 
-    public string OrganizerUsername { get; set; }
+    public UserIdentityDto Organizer { get; set; }
+    public List<UserIdentityDto> MeetingParticipants { get; set; }
+    
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<Meeting, MeetingDetailsDto>()
+            .ForMember(x => x.MeetingParticipants, opt => opt.Ignore());
+    }
 }
