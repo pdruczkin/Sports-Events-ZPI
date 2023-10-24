@@ -36,16 +36,16 @@ public class ApplicationDbContextInitializer
         {
             var userAdmin = new User
             {
-                Email = "admin@zpi.email",
+                Email = "adminTest@zpi.email",
                 Username = "adminTest",
                 FirstName = "adminFirstName",
                 LastName = "adminLastName",
                 DateOfBirth = new DateTime(2001, 10, 10),
                 Gender = Gender.Male,
                 Role = Role.Administrator,
-                VerifiedAt = _dateTimeProvider.UtcNow
+                VerifiedAt = _dateTimeProvider.UtcNow,
             };
-            var userAdminPasswordHash = _passwordHasher.HashPassword(userAdmin, "Password1");
+            var userAdminPasswordHash = _passwordHasher.HashPassword(userAdmin, "AdminPassword1");
             userAdmin.PasswordHash = userAdminPasswordHash;
 
             await _dbContext.Users.AddAsync(userAdmin);
@@ -61,7 +61,7 @@ public class ApplicationDbContextInitializer
                 Role = Role.User,
                 VerifiedAt = _dateTimeProvider.UtcNow
             };
-            var normalUserPasswordHash = _passwordHasher.HashPassword(normalUser, "Password1");
+            var normalUserPasswordHash = _passwordHasher.HashPassword(normalUser, "userPassword1");
             normalUser.PasswordHash = normalUserPasswordHash;
 
             await _dbContext.Users.AddAsync(normalUser);
