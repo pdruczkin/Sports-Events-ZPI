@@ -9,7 +9,7 @@ namespace Application.Friends.Commands.SendFriendInvitation;
 
 public class SendFriendInvitationCommand : IRequest<Unit>
 {
-    public string Username { get; set; }
+    public Guid InviteeId { get; set; }
 }
 
 public class SendFriendInvitationCommandHandler : IRequestHandler<SendFriendInvitationCommand, Unit>
@@ -33,7 +33,7 @@ public class SendFriendInvitationCommandHandler : IRequestHandler<SendFriendInvi
 
         var invitee = await _dbContext
             .Users
-            .FirstOrDefaultAsync(x => x.Username == request.Username, cancellationToken);        
+            .FirstOrDefaultAsync(x => x.Id == request.InviteeId, cancellationToken);        
         if (invitee is null) throw new AppException("User is not found");
 
         if(inviter.Equals(invitee))
@@ -46,7 +46,7 @@ public class SendFriendInvitationCommandHandler : IRequestHandler<SendFriendInvi
             .Where(x => (x.Inviter == inviter && x.Invitee == invitee)
                     || (x.Inviter == invitee && x.Invitee == inviter))
             .OrderByDescending(x => x.StatusDateTimeUtc)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
         if(currentFriendshipState != null)
         {

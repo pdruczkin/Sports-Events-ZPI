@@ -6,8 +6,7 @@ public class SendFriendInvitationCommandValidator : AbstractValidator<SendFriend
 {
     public SendFriendInvitationCommandValidator()
     {
-        RuleFor(x => x.Username)
-            .NotEmpty()
-            .MaximumLength(256);
+        RuleFor(x => x.InviteeId)
+            .NotEmpty();
     }
 }
