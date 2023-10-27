@@ -8,7 +8,12 @@ public class GetMeetingListItemsQueryValidator : AbstractValidator<GetMeetingLis
 {
     private int[] allowedPageSizes = new[] { 10, 30, 60, 120 };
     private string[] allowedSortByColumnNames =
-        { nameof(Meeting.StartDateTimeUtc), nameof(Meeting.Difficulty), nameof(Meeting.MaxParticipantsQuantity) };
+    {
+        nameof(Meeting.StartDateTimeUtc),
+        nameof(Meeting.Difficulty),
+        nameof(Meeting.MaxParticipantsQuantity),
+        nameof(Meeting.StartDateTimeUtc)
+    };
 
     public GetMeetingListItemsQueryValidator()
     {
@@ -35,6 +40,10 @@ public class GetMeetingListItemsQueryValidator : AbstractValidator<GetMeetingLis
             .GreaterThanOrEqualTo(-180.0)
             .LessThanOrEqualTo(180.0)
             .WithMessage("Longitude value out of range from (-180 to 180).");
+
+        RuleFor(x => x.StartDateTimeUtc)
+            .GreaterThanOrEqualTo(DateTime.UtcNow)
+            .WithMessage("Search allowed for future meetings only.");
 
         RuleFor(x => x.SportsDiscipline)
             .IsInEnum();
