@@ -21,6 +21,7 @@ public class MeetingDetailsDto : IMappable<Meeting>
     public int MaxParticipantsQuantity { get; set; }
     public int CurrentParticipantsQuantity { get; set; }
     public int MinParticipantsAge { get; set; }
+    public bool IsOrganizer { get; set; }
 
     public UserIdentityDto Organizer { get; set; }
     public List<UserIdentityDto> MeetingParticipants { get; set; }

@@ -1,6 +1,6 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
 using AutoMapper;
-using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,13 +15,15 @@ public class GetMeetingDetailsByIdQueryHandler : IRequestHandler<GetMeetingDetai
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
+    private readonly IUserContextService _userContextService;
 
-    public GetMeetingDetailsByIdQueryHandler(IApplicationDbContext dbContext, IMapper mapper)
+    public GetMeetingDetailsByIdQueryHandler(IApplicationDbContext dbContext, IMapper mapper, IUserContextService userContextService)
     {
         _dbContext = dbContext;
         _mapper = mapper;
+        _userContextService = userContextService;
     }
-    
+
     public async Task<MeetingDetailsDto> Handle(GetMeetingDetailsByIdQuery request, CancellationToken cancellationToken)
     {
         var meetingDetails = await _dbContext
@@ -30,7 +32,15 @@ public class GetMeetingDetailsByIdQueryHandler : IRequestHandler<GetMeetingDetai
                             .Include(x => x.MeetingParticipants).ThenInclude(x => x.Participant)
                             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
         
+        if(meetingDetails == null)
+            throw new AppException("Meeting not found.");
+
         var meetingDetailsDto = _mapper.Map<MeetingDetailsDto>(meetingDetails);
+
+        var userId = _userContextService.GetUserId;
+
+        // flag if the user from token is also the meeting's organizer
+        meetingDetailsDto.IsOrganizer = (userId != null && userId == meetingDetails.OrganizerId);
 
         var participants = meetingDetails.MeetingParticipants.Select(x => new UserIdentityDto
             { Id = x.Participant.Id, Username = x.Participant.Username }).ToList();
