@@ -1,4 +1,5 @@
-﻿using Application.UserDetails.Commands.ChangePassword;
+﻿using Application.UserDetails.Commands.AddImage;
+using Application.UserDetails.Commands.ChangePassword;
 using Application.UserDetails.Commands.ChangeUserDetails;
 using Application.UserDetails.Queries.GetUserDetails;
 using Microsoft.AspNetCore.Authorization;
@@ -31,5 +32,13 @@ public class UserDetailsController : ApiControllerBase
         
         return Ok();
     }
-    
+
+    [HttpPost]
+    public async Task<ActionResult> AddImage([FromBody] IFormFile file)
+    {
+        var command = new AddImageCommand{File = file};
+        await Mediator.Send(command);
+
+        return Ok();
+    }
 }
