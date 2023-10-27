@@ -2,7 +2,7 @@
 using AutoMapper;
 using Domain.Entities;
 
-namespace Application.Meetings.Queries.MeetingDetails.GetMeetingDetailsById;
+namespace Application.Common.Models;
 
 public class UserIdentityDto : IMappable<User>
 {
