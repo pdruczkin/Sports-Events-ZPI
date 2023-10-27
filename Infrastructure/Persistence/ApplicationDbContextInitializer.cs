@@ -107,6 +107,8 @@ public class ApplicationDbContextInitializer
             {
                 Title = "TestMeeting",
                 Description = "Description",
+                Latitude = 51.1,
+                Longitude = 17,
                 StartDateTimeUtc = utcDate.AddDays(14),
                 EndDateTimeUtc = utcDate.AddDays(14).AddHours(2),
                 Difficulty = Difficulty.Amateur,
@@ -137,6 +139,8 @@ public class ApplicationDbContextInitializer
             {
                 Title = "Empty meeting",
                 Description = "Empty meeting description",
+                Latitude = 51.2,
+                Longitude = 17.1,
                 StartDateTimeUtc = utcDate.AddDays(14).AddHours(1),
                 EndDateTimeUtc = utcDate.AddDays(14).AddHours(2).AddMinutes(15),
                 Difficulty = Difficulty.Professional,
@@ -153,6 +157,8 @@ public class ApplicationDbContextInitializer
             {
                 Title = "Private meeting 2",
                 Description = "private meeting description",
+                Latitude = 51.2,
+                Longitude = 17.2,
                 StartDateTimeUtc = utcDate.AddDays(14).AddHours(3),
                 EndDateTimeUtc = utcDate.AddDays(14).AddHours(7),
                 Difficulty = Difficulty.Intermediate,
