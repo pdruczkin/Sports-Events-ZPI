@@ -25,7 +25,7 @@ public class SearchUsersQueryHandler : IRequestHandler<SearchUsersQuery, List<Us
     {
         var users = await _applicationDbContext
             .Users
-            .Where(x => x.Username.Contains(request.SearchPhrase))
+            .Where(x => x.Username.ToLower().Contains(request.SearchPhrase.ToLower()))
             .Take(20)
             .ToListAsync();
 
