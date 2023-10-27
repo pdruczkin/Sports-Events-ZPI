@@ -15,5 +15,5 @@ public class UserContextService : IUserContextService
 
     public ClaimsPrincipal User =>
         _httpContextAccessor.HttpContext?.User;
-    public Guid? GetUserId => User is null ? null : Guid.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
+    public Guid? GetUserId => User is not null && User.Identity.IsAuthenticated ? Guid.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value) : null;
 }
