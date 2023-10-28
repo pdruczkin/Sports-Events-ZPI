@@ -34,7 +34,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("upcoming")]
-        public async Task<ActionResult<PagedResult<UpcomingMeetingItemDto>>> GetMeetingsHistory([FromQuery] GetUpcomingMeetingsQuery request)
+        public async Task<ActionResult<PagedResult<UpcomingMeetingItemDto>>> GetUpcomingUserMeetings([FromQuery] GetUpcomingMeetingsQuery request)
         {
             var upcomingMeetingsDtos = await Mediator.Send(request);
             return Ok(upcomingMeetingsDtos);
