@@ -1,5 +1,6 @@
 ﻿using Application.Common.Enums;
 using Application.Common.Exceptions;
+using Application.Common.ExtensionMethods;
 using Application.Common.Interfaces;
 using Application.Common.Models;
 using Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
@@ -32,13 +33,13 @@ public class GetUpcomingMeetingsQuery : IRequest<PagedResult<UpcomingMeetingItem
     public SortDirection? SortDirection { get; set; }
 }
 
-public class GetMeetingsHistoryQueryHandler : IRequestHandler<GetUpcomingMeetingsQuery, PagedResult<UpcomingMeetingItemDto>>
+public class GetUpcomingMeetingsQueryHandler : IRequestHandler<GetUpcomingMeetingsQuery, PagedResult<UpcomingMeetingItemDto>>
 {
     private readonly IApplicationDbContext _applicationDbContext;
     private readonly IMapper _mapper;
     private readonly IUserContextService _userContextService;
 
-    public GetMeetingsHistoryQueryHandler(IApplicationDbContext applicationDbContext, IMapper mapper, IUserContextService userContextService)
+    public GetUpcomingMeetingsQueryHandler(IApplicationDbContext applicationDbContext, IMapper mapper, IUserContextService userContextService)
     {
         _applicationDbContext = applicationDbContext;
         _mapper = mapper;
@@ -113,8 +114,8 @@ public class GetMeetingsHistoryQueryHandler : IRequestHandler<GetUpcomingMeeting
                                     .Where(x => request.Difficulty == null || x.Difficulty == request.Difficulty)
                                     .Where(x => request.MeetingVisibility == null || x.Visibility == request.MeetingVisibility)
                                     .Where(x => request.MaxParticipantsQuantity == null || x.MaxParticipantsQuantity <= request.MaxParticipantsQuantity)
-                                    .Where(x => request.CurrentParticipantsQuantityFrom == null || CountCurrentParticipantsQuantity(x.Id) >= request.CurrentParticipantsQuantityFrom)
-                                    .Where(x => request.CurrentParticipantsQuantityTo == null || CountCurrentParticipantsQuantity(x.Id) <= request.CurrentParticipantsQuantityTo)
+                                    .Where(x => request.CurrentParticipantsQuantityFrom == null || _applicationDbContext.CountMeetingParticipantsQuantity(x.Id) >= request.CurrentParticipantsQuantityFrom)
+                                    .Where(x => request.CurrentParticipantsQuantityTo == null || _applicationDbContext.CountMeetingParticipantsQuantity(x.Id) <= request.CurrentParticipantsQuantityTo)
                                     .Where(x => request.MinParticipantsAgeFrom == null || x.MinParticipantsAge >= request.MinParticipantsAgeFrom)
                                     .Where(x => request.MinParticipantsAgeTo == null || x.MinParticipantsAge <= request.MinParticipantsAgeTo)
                                     .Where(x => request.TitleSearchPhrase == null || x.Title.ToLower().Contains(request.TitleSearchPhrase.ToLower()));
@@ -125,13 +126,5 @@ public class GetMeetingsHistoryQueryHandler : IRequestHandler<GetUpcomingMeeting
             filteredMeetingsIQueryable = filteredMeetingsIQueryable.Where(x => x.MeetingParticipants.Select(x => x.ParticipantId).Contains(user.Id));
 
         return filteredMeetingsIQueryable;
-    }
-
-    private int CountCurrentParticipantsQuantity(Guid meetingId)
-    {
-        var totalParticipantsQuantity = 1 + _applicationDbContext // 1 - meeting's organizer is also a participant
-            .MeetingParticipants
-            .Count(mp => mp.MeetingId == meetingId && mp.InvitationStatus == InvitationStatus.Accepted);
-        return totalParticipantsQuantity;
     }
 }

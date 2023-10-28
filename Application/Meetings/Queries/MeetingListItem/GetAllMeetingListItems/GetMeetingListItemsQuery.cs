@@ -1,4 +1,5 @@
 ﻿using Application.Common.Enums;
+using Application.Common.ExtensionMethods;
 using Application.Common.Interfaces;
 using Application.Common.Models;
 using AutoMapper;
@@ -120,18 +121,10 @@ public class GetAllMeetingListItemsQueryHandler : IRequestHandler<GetMeetingList
                                     .Where(x => request.Difficulty == null || x.Difficulty == request.Difficulty)
                                     .Where(x => request.MeetingVisibility == null || x.Visibility == request.MeetingVisibility)
                                     .Where(x => request.MaxParticipantsQuantity == null || x.MaxParticipantsQuantity <= request.MaxParticipantsQuantity)
-                                    .Where(x => request.CurrentParticipantsQuantity == null || CountCurrentParticipantsQuantity(x.Id) <= request.CurrentParticipantsQuantity)
+                                    .Where(x => request.CurrentParticipantsQuantity == null || _applicationDbContext.CountMeetingParticipantsQuantity(x.Id) <= request.CurrentParticipantsQuantity)
                                     .Where(x => request.MinParticipantsAge == null || x.MinParticipantsAge >= request.MinParticipantsAge)
                                     .Where(x => request.TitleSearchPhrase == null || x.Title.ToLower().Contains(request.TitleSearchPhrase.ToLower()));
 
         return filteredMeetingsIQueryable;
-    }
-
-    private int CountCurrentParticipantsQuantity(Guid meetingId)
-    {
-        var currentParticipantsQuantity = 1 + _applicationDbContext // 1 - meeting's organizer is also a participant
-            .MeetingParticipants
-            .Count(mp => mp.MeetingId == meetingId && mp.InvitationStatus == InvitationStatus.Accepted);
-        return currentParticipantsQuantity;
     }
 }

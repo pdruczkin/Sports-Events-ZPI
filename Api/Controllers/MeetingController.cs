@@ -3,11 +3,13 @@ using Application.Meetings.Commands.CreateMeeting;
 using Application.Meetings.Commands.JoinMeeting;
 using Application.Meetings.Commands.RejectInvitation;
 using Application.Meetings.Commands.SendInvitation;
+using Application.Meetings.Commands.UpdateMeetingData;
 using Application.Meetings.Queries.GetMeetingsInvitations;
 using Application.Meetings.Queries.MeetingDetails.GetMeetingDetailsById;
 using Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
 using Application.Meetings.Queries.MeetingPin.GetMeetingPinDetailsById;
 using Application.Meetings.Queries.UpcomingUserMeetings;
+using Application.UserDetails.Commands.ChangeUserDetails;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +23,14 @@ namespace Api.Controllers
         {
             var meetingDetailsDto = await Mediator.Send(new GetMeetingDetailsByIdQuery() { Id = id });
             return Ok(meetingDetailsDto);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> UpdateMeetingData([FromBody] UpdateMeetingDataCommand command)
+        {
+            await Mediator.Send(command);
+
+            return Ok();
         }
 
         [HttpGet("upcoming")]

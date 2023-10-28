@@ -1,4 +1,5 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.ExtensionMethods;
 using Application.Common.Interfaces;
 using Domain.Entities;
 using Domain.Enums;
@@ -51,7 +52,7 @@ public class SendInvitationCommandHandler : IRequestHandler<SendInvitationComman
 
         if (meeting.OrganizerId != userId) throw new ForbidException("Only organizer can invite new participants");
 
-        var newParticipantAge = _dateTimeProvider.CalculateAge(newParticipant.DateOfBirth);
+        var newParticipantAge = newParticipant.DateOfBirth.CalculateAge();
         var isNewParticipantAgeCorrect = newParticipantAge >= meeting.MinParticipantsAge;
         
         if(meeting.MeetingParticipants.Any(x => x.ParticipantId == newParticipant.Id && x.InvitationStatus is InvitationStatus.Accepted or InvitationStatus.Pending))
