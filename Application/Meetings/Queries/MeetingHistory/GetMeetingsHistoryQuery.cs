@@ -1,5 +1,6 @@
 ﻿using Application.Common.Enums;
 using Application.Common.Exceptions;
+using Application.Common.ExtensionMethods;
 using Application.Common.Interfaces;
 using Application.Common.Models;
 using Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
@@ -113,8 +114,8 @@ public class GetMeetingsHistoryQueryHandler : IRequestHandler<GetMeetingsHistory
                                     .Where(x => request.Difficulty == null || x.Difficulty == request.Difficulty)
                                     .Where(x => request.MeetingVisibility == null || x.Visibility == request.MeetingVisibility)
                                     .Where(x => request.MaxParticipantsQuantity == null || x.MaxParticipantsQuantity <= request.MaxParticipantsQuantity)
-                                    .Where(x => request.FinalParticipantsQuantityFrom == null || CountTotalParticipantsQuantity(x.Id) >= request.FinalParticipantsQuantityFrom)
-                                    .Where(x => request.FinalParticipantsQuantityTo == null || CountTotalParticipantsQuantity(x.Id) <= request.FinalParticipantsQuantityTo)
+                                    .Where(x => request.FinalParticipantsQuantityFrom == null || _applicationDbContext.CountMeetingParticipantsQuantity(x.Id) >= request.FinalParticipantsQuantityFrom)
+                                    .Where(x => request.FinalParticipantsQuantityTo == null || _applicationDbContext.CountMeetingParticipantsQuantity(x.Id) <= request.FinalParticipantsQuantityTo)
                                     .Where(x => request.MinParticipantsAgeFrom == null || x.MinParticipantsAge >= request.MinParticipantsAgeFrom)
                                     .Where(x => request.MinParticipantsAgeTo == null || x.MinParticipantsAge <= request.MinParticipantsAgeTo)
                                     .Where(x => request.TitleSearchPhrase == null || x.Title.ToLower().Contains(request.TitleSearchPhrase.ToLower()));
@@ -125,13 +126,5 @@ public class GetMeetingsHistoryQueryHandler : IRequestHandler<GetMeetingsHistory
             filteredMeetingsIQueryable = filteredMeetingsIQueryable.Where(x => x.MeetingParticipants.Select(x => x.ParticipantId).Contains(user.Id));
 
         return filteredMeetingsIQueryable;
-    }
-
-    private int CountTotalParticipantsQuantity(Guid meetingId)
-    {
-        var totalParticipantsQuantity = 1 + _applicationDbContext // 1 - meeting's organizer is also a participant
-            .MeetingParticipants
-            .Count(mp => mp.MeetingId == meetingId && mp.InvitationStatus == InvitationStatus.Accepted);
-        return totalParticipantsQuantity;
     }
 }
