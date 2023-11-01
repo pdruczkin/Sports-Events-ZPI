@@ -12,7 +12,7 @@ public class ImageService : IImageService
     
     public ImageService(CloudinarySettings cloudinarySettings)
     {
-        var acc = new Account(cloudinarySettings.CloudName, cloudinarySettings.ApiKey, cloudinarySettings.ApiKey);
+        var acc = new Account(cloudinarySettings.CloudName, cloudinarySettings.ApiKey, cloudinarySettings.ApiSecret);
         _cloudinary = new Cloudinary(acc);
     }
     

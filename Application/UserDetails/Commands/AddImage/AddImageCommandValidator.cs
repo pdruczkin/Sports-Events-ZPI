@@ -9,9 +9,8 @@ public class AddImageCommandValidator : AbstractValidator<AddImageCommand>
         RuleFor(x => x.File)
             .NotNull();
         
-        RuleFor(x => x.File.Length)
-            .NotNull()
+        RuleFor(x => x.File.ContentType)
             .Must(x => x.Equals("image/jpeg") || x.Equals("image/jpg") || x.Equals("image/png"))
-            .WithMessage("File type is larger than allowed");
+            .WithMessage("File type is prohibited");
     }
 }
