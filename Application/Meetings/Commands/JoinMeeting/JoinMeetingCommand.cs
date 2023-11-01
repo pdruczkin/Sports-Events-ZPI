@@ -1,4 +1,5 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.ExtensionMethods;
 using Application.Common.Interfaces;
 using Domain.Entities;
 using Domain.Enums;
@@ -42,7 +43,7 @@ public class JoinMeetingCommandHandler : IRequestHandler<JoinMeetingCommand, Uni
         if (meeting.StartDateTimeUtc < _dateTimeProvider.UtcNow)
             throw new AppException("Joining to meeting is possible before meeting start time.");
         
-        var userAge = _dateTimeProvider.CalculateAge(user.DateOfBirth);
+        var userAge = user.DateOfBirth.CalculateAge();
         var isUserAgeCorrect = userAge >= meeting.MinParticipantsAge;
 
         if (!isUserAgeCorrect)
