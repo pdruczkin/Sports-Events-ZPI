@@ -5,6 +5,7 @@ using Application.Meetings.Commands.RejectInvitation;
 using Application.Meetings.Commands.SendInvitation;
 using Application.Meetings.Queries.GetMeetingsInvitations;
 using Application.Meetings.Queries.MeetingDetails.GetMeetingDetailsById;
+using Application.Meetings.Queries.MeetingHistory;
 using Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
 using Application.Meetings.Queries.MeetingPin.GetMeetingPinDetailsById;
 using Microsoft.AspNetCore.Authorization;
@@ -35,6 +36,13 @@ namespace Api.Controllers
         {
             var meetingListItemsDtos = await Mediator.Send(request);
             return Ok(meetingListItemsDtos);
+        }
+
+        [HttpGet("history")]
+        public async Task<ActionResult<PagedResult<MeetingHistoryItemDto>>> GetMeetingsHistory([FromQuery] GetMeetingsHistoryQuery request)
+        {
+            var meetingsHistoryDtos = await Mediator.Send(request);
+            return Ok(meetingsHistoryDtos);
         }
 
         [AllowAnonymous]

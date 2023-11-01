@@ -57,7 +57,8 @@ public class GetAllMeetingListItemsQueryHandler : IRequestHandler<GetMeetingList
                 {
                     { nameof(Meeting.StartDateTimeUtc), r => r.StartDateTimeUtc },
                     { nameof(Meeting.Difficulty), r => r.Difficulty },
-                    { nameof(Meeting.MaxParticipantsQuantity), r => r.MaxParticipantsQuantity }
+                    { nameof(Meeting.MaxParticipantsQuantity), r => r.MaxParticipantsQuantity },
+                    { nameof(Meeting.StartDateTimeUtc), r => r.StartDateTimeUtc}
                 };
 
             var selectedColumn = columnsSelectors[request.SortBy];
