@@ -36,6 +36,7 @@ public class DeleteImageCommandHandler : IRequestHandler<DeleteImageCommand, Uni
         if (user is null) throw new AppException("User is not found");
 
         if (user.Image == null) throw new AppException("User doesn't have uploaded image");
+        if (user.Image.PublicId != request.PublicId) throw new AppException("Provided image publicId doesn't match user image publicId");
         
         var deletionResult = await _imageService.DeleteImageAsync(user.Image.PublicId);
         if (deletionResult.Error != null) throw new AppException("Error occured in image deletion");

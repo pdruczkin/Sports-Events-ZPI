@@ -1,4 +1,5 @@
 ﻿using Application.Common.Mappings;
+using Application.Common.Models;
 using Domain.Entities;
 using Domain.Enums;
 
@@ -12,4 +13,5 @@ public class UserDetails : IMappable<User>
     public string LastName { get; set; }
     public DateTime DateOfBirth { get; set; }
     public Gender Gender { get; set; }
+    public ImageDto Image { get; set; }
 }

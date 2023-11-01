@@ -29,7 +29,10 @@ public class GetUserDetailsCommandHandler : IRequestHandler<GetUserDetailsComman
     public async Task<UserDetails> Handle(GetUserDetailsCommand request, CancellationToken cancellationToken)
     {
         var userId = _userContextService.GetUserId;
-        var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
+        var user = await _dbContext
+            .Users
+            .Include(x => x.Image)
+            .FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
         
         if (user is null) throw new AppException("User is not found");
 
