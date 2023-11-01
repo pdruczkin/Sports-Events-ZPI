@@ -1,10 +1,12 @@
-﻿using Application.Friends.Commands.AcceptFriendInvitation;
+﻿using Application.Common.Models;
+using Application.Friends.Commands.AcceptFriendInvitation;
 using Application.Friends.Commands.BlockUser;
 using Application.Friends.Commands.RejectFriendInvitation;
 using Application.Friends.Commands.SendFriendInvitation;
 using Application.Friends.Commands.UnlockUser;
 using Application.Friends.Queries.GetFriendInvitations;
 using Application.Friends.Queries.GetFriendsList;
+using Application.Friends.Queries.SearchUsers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -16,6 +18,13 @@ namespace Api.Controllers
         {
             var friendsUsernamesDtos = await Mediator.Send(new GetFriendsListQuery());
             return Ok(friendsUsernamesDtos);
+        }
+
+        [HttpGet("search/{searchPhrase}")]
+        public async Task<ActionResult<List<UserIdentityDto>>> SearchUsers(string searchPhrase)
+        {
+            var userIdentitiesDtos = await Mediator.Send(new SearchUsersQuery() { SearchPhrase = searchPhrase });
+            return Ok(userIdentitiesDtos);
         }
 
         [HttpGet("invitations")]
