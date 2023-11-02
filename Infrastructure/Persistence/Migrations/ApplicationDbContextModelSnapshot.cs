@@ -22,6 +22,35 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Domain.Entities.ChatMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MeetingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("SentAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MeetingId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ChatMessages");
+                });
+
             modelBuilder.Entity("Domain.Entities.Friendship", b =>
                 {
                     b.Property<Guid>("Id")
@@ -182,6 +211,25 @@ namespace Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Domain.Entities.ChatMessage", b =>
+                {
+                    b.HasOne("Domain.Entities.Meeting", "Meeting")
+                        .WithMany("ChatMessages")
+                        .HasForeignKey("MeetingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany("ChatMessages")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Meeting");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Entities.Friendship", b =>
                 {
                     b.HasOne("Domain.Entities.User", "Invitee")
@@ -233,6 +281,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Meeting", b =>
                 {
+                    b.Navigation("ChatMessages");
+
                     b.Navigation("MeetingParticipants");
                 });
 
@@ -241,6 +291,8 @@ namespace Infrastructure.Migrations
                     b.Navigation("AsInvitee");
 
                     b.Navigation("AsInviter");
+
+                    b.Navigation("ChatMessages");
 
                     b.Navigation("MeetingParticipants");
 
