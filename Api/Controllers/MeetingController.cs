@@ -34,7 +34,7 @@ namespace Api.Controllers
 
             return Ok();
         }
-
+         
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(Guid id)
         {

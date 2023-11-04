@@ -2,6 +2,7 @@
 using Application.Friends.Commands.AcceptFriendInvitation;
 using Application.Friends.Commands.BlockUser;
 using Application.Friends.Commands.RejectFriendInvitation;
+using Application.Friends.Commands.RemoveFriend;
 using Application.Friends.Commands.SendFriendInvitation;
 using Application.Friends.Commands.UnlockUser;
 using Application.Friends.Queries.GetFriendInvitations;
@@ -64,6 +65,13 @@ namespace Api.Controllers
         
         [HttpPost("unlock")]
         public async Task<ActionResult> UnlockUser([FromBody] UnlockUserCommand command)
+        {
+            await Mediator.Send(command);
+            return NoContent();
+        }
+
+        [HttpPost("remove")]
+        public async Task<ActionResult> RemoveFriend([FromBody] RemoveFriendCommand command)
         {
             await Mediator.Send(command);
             return NoContent();
