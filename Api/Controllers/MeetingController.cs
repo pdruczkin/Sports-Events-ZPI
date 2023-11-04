@@ -1,5 +1,6 @@
 ﻿using Application.Common.Models;
 using Application.Meetings.Commands.CreateMeeting;
+using Application.Meetings.Commands.DeleteMeeting;
 using Application.Meetings.Commands.JoinMeeting;
 using Application.Meetings.Commands.RejectInvitation;
 using Application.Meetings.Commands.SendInvitation;
@@ -32,6 +33,13 @@ namespace Api.Controllers
             await Mediator.Send(command);
 
             return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(Guid id)
+        {
+            await Mediator.Send(new DeleteMeetingCommand() { MeetingId = id });
+            return NoContent();
         }
 
         [HttpGet("upcoming")]
