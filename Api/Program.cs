@@ -2,7 +2,9 @@ using Api;
 using Api.Middleware;
 using Application;
 using Infrastructure;
+using Infrastructure.Hubs;
 using Infrastructure.Persistence;
+using ConfigureServices = Api.ConfigureServices;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +37,8 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 
 app.UseHttpsRedirection();
+
+app.MapHub<ChatHub>("chat-hub");
 
 app.UseAuthorization();
 
