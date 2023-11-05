@@ -15,6 +15,10 @@ public static class ConfigureServices
         var emailSenderSettings = new EmailSenderSettings();
         configuration.GetSection("EmailSender").Bind(emailSenderSettings);
         services.AddSingleton(emailSenderSettings);
+
+        var cloudinarySettings = new CloudinarySettings();
+        configuration.GetSection("CloudinarySettings").Bind(cloudinarySettings);
+        services.AddSingleton(cloudinarySettings);
         
         
         services.AddDbContext<ApplicationDbContext>(options =>
@@ -26,14 +30,11 @@ public static class ConfigureServices
         services.AddScoped<ApplicationDbContextInitializer>();
 
         services.AddHttpContextAccessor();
+        
         services.AddScoped<IUserContextService, UserContextService>();
-
         services.AddTransient<IDateTimeProvider, DateTimeProvider>();
-
-        
-        
-        
         services.AddScoped<IEmailSender, EmailSender>();
+        services.AddScoped<IImageService, ImageService>();
         
         return services;
     }
