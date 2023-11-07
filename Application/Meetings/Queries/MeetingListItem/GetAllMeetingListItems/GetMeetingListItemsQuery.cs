@@ -1,7 +1,6 @@
 ﻿using Application.Common.Enums;
 using Application.Common.ExtensionMethods;
 using Application.Common.Interfaces;
-using Application.Common.Models;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
@@ -11,7 +10,7 @@ using System.Linq.Expressions;
 
 namespace Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
 
-public class GetMeetingListItemsQuery : IRequest<PagedResult<MeetingListItemDto>>
+public class GetMeetingListItemsQuery : IRequest<List<MeetingListItemDto>>
 {
     public double SouthWestLatitude { get; set; }
     public double SouthWestLongitude { get; set; }
@@ -20,26 +19,25 @@ public class GetMeetingListItemsQuery : IRequest<PagedResult<MeetingListItemDto>
     public DateTime? StartDateTimeUtc { get; set; }
     public SportsDiscipline? SportsDiscipline { get; set; }
     public Difficulty? Difficulty { get; set; }
-    public MeetingVisibility? MeetingVisibility { get; set; }
     public int? MaxParticipantsQuantity { get; set; }
     public int? CurrentParticipantsQuantity { get; set; }
     public int? MinParticipantsAge { get; set; }
     public string? TitleSearchPhrase { get; set; }
-    public int PageNumber { get; set; }
-    public int PageSize { get; set; }
     public string? SortBy { get; set; }
     public SortDirection? SortDirection { get; set; }
 }
 
-public class GetAllMeetingListItemsQueryHandler : IRequestHandler<GetMeetingListItemsQuery, PagedResult<MeetingListItemDto>>
+public class GetAllMeetingListItemsQueryHandler : IRequestHandler<GetMeetingListItemsQuery, List<MeetingListItemDto>>
 {
     private readonly IApplicationDbContext _applicationDbContext;
     private readonly IMapper _mapper;
+    private readonly IUserContextService _userContextService;
 
-    public GetAllMeetingListItemsQueryHandler(IApplicationDbContext applicationDbContext, IMapper mapper)
+    public GetAllMeetingListItemsQueryHandler(IApplicationDbContext applicationDbContext, IMapper mapper, IUserContextService userContextService)
     {
         _applicationDbContext = applicationDbContext;
         _mapper = mapper;
+        _userContextService = userContextService;
     }
 
     public void Mapping(Profile profile)
@@ -48,7 +46,7 @@ public class GetAllMeetingListItemsQueryHandler : IRequestHandler<GetMeetingList
             .ForMember(dto => dto.OrganizerUsername, o => o.MapFrom(m => m.Organizer.Username));
     }
 
-    public async Task<PagedResult<MeetingListItemDto>> Handle(GetMeetingListItemsQuery request, CancellationToken cancellationToken)
+    public async Task<List<MeetingListItemDto>> Handle(GetMeetingListItemsQuery request, CancellationToken cancellationToken)
     {
         var filteredMeetingsBaseQuery = GetFilteredMeetingsQuery(request);
 
@@ -69,34 +67,23 @@ public class GetAllMeetingListItemsQueryHandler : IRequestHandler<GetMeetingList
                 : filteredMeetingsBaseQuery.OrderByDescending(selectedColumn);
         }
 
-        var filteredMeetingsPaged = await GetPagedMeetings(filteredMeetingsBaseQuery, request.PageSize, request.PageNumber);
+        var filteredMeetings = await filteredMeetingsBaseQuery.ToListAsync(cancellationToken);
 
-        var totalMeetingsCount = filteredMeetingsBaseQuery.Count();
+        var meetingListItemsDtos = _mapper.Map<List<MeetingListItemDto>>(filteredMeetings);
 
-        var meetingListItemsDtos = _mapper.Map<List<MeetingListItemDto>>(filteredMeetingsPaged);
-
-        var pagedResult = new PagedResult<MeetingListItemDto>(meetingListItemsDtos, totalMeetingsCount, request.PageNumber, request.PageSize);
-
-        return pagedResult;
-    }
-
-    private async Task<List<Meeting>> GetPagedMeetings(IQueryable<Meeting> query, int pageSize, int pageNumber)
-    {
-        var pagedMeetings = await query
-            .Skip(pageSize * (pageNumber - 1))
-            .Take(pageSize)
-            .ToListAsync();
-
-        return pagedMeetings;
+        return meetingListItemsDtos;
     }
 
     private IQueryable<Meeting> GetFilteredMeetingsQuery(GetMeetingListItemsQuery request)
     {
+        var userId = _userContextService.GetUserId;
+
         var meetings = _applicationDbContext
                         .Meetings
-                        .Include(x => x.Organizer);
+                        .Include(x => x.Organizer)
+                        .Include(x => x.MeetingParticipants);
 
-        IQueryable<Meeting> filteredMeetingsIQueryable;        
+        IQueryable<Meeting> filteredMeetingsIQueryable;
 
         if (request.SouthWestLongitude < request.NorthEastLongitude) // "typical" situation
         {
@@ -120,11 +107,12 @@ public class GetAllMeetingListItemsQueryHandler : IRequestHandler<GetMeetingList
                                     .Where(x => (request.StartDateTimeUtc == null && x.StartDateTimeUtc > DateTime.UtcNow) || x.StartDateTimeUtc > request.StartDateTimeUtc)
                                     .Where(x => request.SportsDiscipline == null || x.SportsDiscipline == request.SportsDiscipline)
                                     .Where(x => request.Difficulty == null || x.Difficulty == request.Difficulty)
-                                    .Where(x => request.MeetingVisibility == null || x.Visibility == request.MeetingVisibility)
                                     .Where(x => request.MaxParticipantsQuantity == null || x.MaxParticipantsQuantity <= request.MaxParticipantsQuantity)
                                     .Where(x => request.CurrentParticipantsQuantity == null || _applicationDbContext.CountMeetingParticipantsQuantity(x.Id) <= request.CurrentParticipantsQuantity)
                                     .Where(x => request.MinParticipantsAge == null || x.MinParticipantsAge >= request.MinParticipantsAge)
-                                    .Where(x => request.TitleSearchPhrase == null || x.Title.ToLower().Contains(request.TitleSearchPhrase.ToLower()));
+                                    .Where(x => request.TitleSearchPhrase == null || x.Title.ToLower().Contains(request.TitleSearchPhrase.ToLower()))
+                                    .Where(x => x.Visibility == MeetingVisibility.Public || 
+                                            (userId != null && (x.OrganizerId == userId || x.MeetingParticipants.Any(x => x.ParticipantId == userId && x.InvitationStatus != InvitationStatus.Rejected))));
 
         return filteredMeetingsIQueryable;
     }

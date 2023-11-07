@@ -11,7 +11,6 @@ using Application.Meetings.Queries.MeetingHistory;
 using Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
 using Application.Meetings.Queries.MeetingPin.GetMeetingPinDetailsById;
 using Application.Meetings.Queries.UpcomingUserMeetings;
-using Application.UserDetails.Commands.ChangeUserDetails;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,7 +42,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("upcoming")]
-        public async Task<ActionResult<PagedResult<UpcomingMeetingItemDto>>> GetUpcomingUserMeetings([FromQuery] GetUpcomingMeetingsQuery request)
+        public async Task<ActionResult<List<UpcomingMeetingItemDto>>> GetUpcomingUserMeetings([FromQuery] GetUpcomingMeetingsQuery request)
         {
             var upcomingMeetingsDtos = await Mediator.Send(request);
             return Ok(upcomingMeetingsDtos);
@@ -58,7 +57,7 @@ namespace Api.Controllers
 
         [AllowAnonymous]
         [HttpGet("list")]
-        public async Task<ActionResult<PagedResult<MeetingListItemDto>>> GetAllMeetingListItems([FromQuery] GetMeetingListItemsQuery request)
+        public async Task<ActionResult<List<MeetingListItemDto>>> GetAllMeetingListItems([FromQuery] GetMeetingListItemsQuery request)
         {
             var meetingListItemsDtos = await Mediator.Send(request);
             return Ok(meetingListItemsDtos);
