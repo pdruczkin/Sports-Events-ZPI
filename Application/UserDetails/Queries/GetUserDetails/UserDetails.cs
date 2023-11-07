@@ -16,7 +16,9 @@ public class UserDetails : IMappable<User>
     public string LastName { get; set; }
     public int Age { get; set; }
     public Gender Gender { get; set; }
-    public ImageDto Image { get; set; }
+    public ImageDto? Image { get; set; }
+    public IEnumerable<MeetingPinDto> RecentMeetings { get; set; } = new List<MeetingPinDto>();
+    
     
     public void Mapping(Profile profile)
     {
