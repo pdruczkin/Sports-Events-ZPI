@@ -13,7 +13,7 @@ public class MeetingParticipantConfiguration : IEntityTypeConfiguration<MeetingP
         builder
             .HasOne(x => x.Meeting)
             .WithMany(m => m.MeetingParticipants)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasOne(x => x.Participant)
