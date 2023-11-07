@@ -17,11 +17,12 @@ public class FriendDetailsDto : IMappable<User>
     public int? Age { get; set; }
     public Gender? Gender { get; set; }
     public ImageDto? Image { get; set; }
-    
+    public IEnumerable<MeetingPinDto> RecentMeetings { get; set; } = new List<MeetingPinDto>();
+
     public void Mapping(Profile profile)
     {
         profile.CreateMap<User, FriendDetailsDto>()
-            .ForMember(u => u.Age, o => o.MapFrom(s => s.DateOfBirth.CalculateAge()));
+            .ForMember(x => x.Age, o => o.MapFrom(s => s.DateOfBirth.CalculateAge()));
     }
 }
 

@@ -1,5 +1,6 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Models;
 using AutoMapper;
 using Domain.Enums;
 using MediatR;
@@ -39,9 +40,19 @@ public class GetFriendDetailsQueryHandler : IRequestHandler<GetFriendDetailsQuer
         var friend = await _dbContext
             .Users
             .Include(x => x.Image)
+            .Include(x => x.MeetingParticipants).ThenInclude(x => x.Meeting)
             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
         var friendDetailsDto = _mapper.Map<FriendDetailsDto>(friend);
+
+        var recentMeetings = friend.MeetingParticipants
+            .Where(x => x.InvitationStatus == InvitationStatus.Accepted)
+            .OrderByDescending(x => x.Meeting!.StartDateTimeUtc)
+            .Take(3)
+            .Select(x => x.Meeting)
+            .ToList();
+
+        friendDetailsDto.RecentMeetings = _mapper.Map<List<MeetingPinDto>>(recentMeetings);
         
         var friendship = user.AsInvitee.Where(x => x.InviterId == request.Id)
             .Union(user.AsInviter.Where(x => x.InviteeId == request.Id))
@@ -55,7 +66,6 @@ public class GetFriendDetailsQueryHandler : IRequestHandler<GetFriendDetailsQuer
             friendDetailsDto.Age = null;
             friendDetailsDto.Gender = null;
         }
-
         return friendDetailsDto;
     }
 }
