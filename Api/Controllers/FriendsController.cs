@@ -23,7 +23,7 @@ namespace Api.Controllers
         }
         
         [HttpGet("{friendId}")]
-        public async Task<ActionResult<List<FriendInvitationsDto>>> GetFriendDetails(Guid friendId)
+        public async Task<ActionResult<FriendDetailsDto>> GetFriendDetails(Guid friendId)
         {
             var friendDetailsDto = await Mediator.Send(new GetFriendDetailsQuery{Id = friendId});
             return Ok(friendDetailsDto);
