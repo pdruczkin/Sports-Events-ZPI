@@ -40,13 +40,16 @@ public class GetFriendDetailsQueryHandler : IRequestHandler<GetFriendDetailsQuer
         var friend = await _dbContext
             .Users
             .Include(x => x.Image)
-            .Include(x => x.MeetingParticipants).ThenInclude(x => x.Meeting)
+            .Include(x => x.MeetingParticipants).ThenInclude(x => x.Meeting).ThenInclude(x => x.MeetingParticipants)
             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
+        if (friend is null) throw new AppException("User you're looking for is not found");
+        
         var friendDetailsDto = _mapper.Map<FriendDetailsDto>(friend);
 
         var recentMeetings = friend.MeetingParticipants
             .Where(x => x.InvitationStatus == InvitationStatus.Accepted)
+            .Where(x => x.Meeting.Visibility == MeetingVisibility.Public || x.Meeting.MeetingParticipants.Any(participant => participant.ParticipantId == userId && participant.InvitationStatus == InvitationStatus.Accepted))
             .OrderByDescending(x => x.Meeting!.StartDateTimeUtc)
             .Take(3)
             .Select(x => x.Meeting)
