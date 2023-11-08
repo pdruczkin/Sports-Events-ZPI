@@ -2,9 +2,9 @@
 using Domain.Entities;
 using Domain.Enums;
 
-namespace Application.Meetings.Queries.MeetingPin.GetMeetingPinDetailsById;
+namespace Application.Common.Models;
 
-public class MeetingPinDetailsDto : IMappable<Meeting>
+public class MeetingPinDto : IMappable<Meeting>
 {
     public Guid Id { get; set; }
     public string Title { get; set; }

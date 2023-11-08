@@ -5,6 +5,7 @@ using Application.Friends.Commands.RejectFriendInvitation;
 using Application.Friends.Commands.RemoveFriend;
 using Application.Friends.Commands.SendFriendInvitation;
 using Application.Friends.Commands.UnlockUser;
+using Application.Friends.Queries.GetFriendDetails;
 using Application.Friends.Queries.GetFriendInvitations;
 using Application.Friends.Queries.GetFriendsList;
 using Application.Friends.Queries.SearchUsers;
@@ -20,6 +21,14 @@ namespace Api.Controllers
             var friendsUsernamesDtos = await Mediator.Send(new GetFriendsListQuery());
             return Ok(friendsUsernamesDtos);
         }
+        
+        [HttpGet("{friendId}")]
+        public async Task<ActionResult<FriendDetailsDto>> GetFriendDetails(Guid friendId)
+        {
+            var friendDetailsDto = await Mediator.Send(new GetFriendDetailsQuery{Id = friendId});
+            return Ok(friendDetailsDto);
+        }
+        
 
         [HttpGet("search/{searchPhrase}")]
         public async Task<ActionResult<List<UserIdentityDto>>> SearchUsers(string searchPhrase)
@@ -34,7 +43,7 @@ namespace Api.Controllers
             var friendInvitations = await Mediator.Send(new GetFriendInvitationsQuery());
             return Ok(friendInvitations);
         }
-
+        
         [HttpPost("invite")]
         public async Task<ActionResult> SendFriendInvitation([FromBody] SendFriendInvitationCommand command)
         {

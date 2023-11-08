@@ -9,7 +9,6 @@ using Application.Meetings.Queries.GetMeetingsInvitations;
 using Application.Meetings.Queries.MeetingDetails.GetMeetingDetailsById;
 using Application.Meetings.Queries.MeetingHistory;
 using Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
-using Application.Meetings.Queries.MeetingPin.GetMeetingPinDetailsById;
 using Application.Meetings.Queries.UpcomingUserMeetings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -69,16 +68,7 @@ namespace Api.Controllers
             var meetingsHistoryDtos = await Mediator.Send(request);
             return Ok(meetingsHistoryDtos);
         }
-
-        [AllowAnonymous]
-        [HttpGet("pin/{id}")]
-        public async Task<ActionResult<MeetingPinDetailsDto>> GetPinDetailsById(Guid id)
-        {
-            var pinDetailsDto = await Mediator.Send(new GetMeetingPinDetailsByIdQuery() { Id = id });
-            return Ok(pinDetailsDto);
-        }
-
-
+        
         [HttpPost("{meetingId:guid}/join")]
         public async Task<ActionResult> JoinMeeting([FromRoute] Guid meetingId)
         {
