@@ -45,7 +45,7 @@ public class LeaveMeetingCommandHandler : IRequestHandler<LeaveMeetingCommand, U
             throw new AppException("You can't leave that meeting");
 
         if (meetingParticipation.Meeting!.StartDateTimeUtc < _dateTimeProvider.UtcNow)
-            throw new AppException("You can't leave meeting which has already started");
+            throw new AppException("You can't leave meeting when it has already started");
 
         meetingParticipation.InvitationStatus = InvitationStatus.Rejected;
 

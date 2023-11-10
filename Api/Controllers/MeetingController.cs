@@ -4,6 +4,7 @@ using Application.Meetings.Commands.DeleteMeeting;
 using Application.Meetings.Commands.JoinMeeting;
 using Application.Meetings.Commands.LeaveMeeting;
 using Application.Meetings.Commands.RejectInvitation;
+using Application.Meetings.Commands.RemoveUserFromMeeting;
 using Application.Meetings.Commands.SendInvitation;
 using Application.Meetings.Commands.UpdateMeetingData;
 using Application.Meetings.Queries.GetMeetingsInvitations;
@@ -93,6 +94,14 @@ namespace Api.Controllers
             await Mediator.Send(new RejectInvitationCommand() { MeetingId = meetingId });
             return NoContent();
         }
+        
+        [HttpPost("{meetingId:guid}/remove/{userId:guid}")]
+        public async Task<ActionResult> RemoveUserFromMeeting([FromRoute] Guid meetingId, [FromRoute] Guid userId)
+        {
+            await Mediator.Send(new RemoveUserFromMeetingCommand { MeetingId = meetingId, UserToRemoveId = userId});
+            return NoContent();
+        }
+        
         
         [HttpPost("invite")]
         public async Task<ActionResult> SendInvitation([FromBody] SendInvitationCommand command)
