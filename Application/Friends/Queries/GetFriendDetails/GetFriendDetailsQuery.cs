@@ -43,6 +43,7 @@ public class GetFriendDetailsQueryHandler : IRequestHandler<GetFriendDetailsQuer
             .Users
             .Include(x => x.Image)
             .Include(x => x.MeetingParticipants).ThenInclude(x => x.Meeting).ThenInclude(x => x.MeetingParticipants)
+            .Include(x => x.MeetingParticipants).ThenInclude(x => x.Meeting).ThenInclude(x => x.Organizer)
             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
         if (friend is null) throw new AppException("User you're looking for is not found");

@@ -36,7 +36,7 @@ public class GetUserDetailsQueryHandler : IRequestHandler<GetUserDetailsCommand,
         var user = await _dbContext
             .Users
             .Include(x => x.Image)
-            .Include(x => x.MeetingParticipants).ThenInclude(x => x.Meeting)
+            .Include(x => x.MeetingParticipants).ThenInclude(x => x.Meeting).ThenInclude(x => x.Organizer)
             .FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
         
         if (user is null) throw new AppException("User is not found");
