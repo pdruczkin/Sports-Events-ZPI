@@ -19,6 +19,8 @@ public class FriendDetailsDto : IMappable<User>
     public ImageDto? Image { get; set; }
     public IEnumerable<MeetingPinDto> RecentMeetings { get; set; } = new List<MeetingPinDto>();
 
+    public FriendshipStatusDto FriendshipStatusDto { get; set; } = new FriendshipStatusDto();
+
     public void Mapping(Profile profile)
     {
         profile.CreateMap<User, FriendDetailsDto>()

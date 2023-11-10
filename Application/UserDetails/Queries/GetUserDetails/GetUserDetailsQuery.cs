@@ -20,12 +20,14 @@ public class GetUserDetailsQueryHandler : IRequestHandler<GetUserDetailsCommand,
     private readonly IApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
     private readonly IUserContextService _userContextService;
+    private readonly IDateTimeProvider _dateTimeProvider;
 
-    public GetUserDetailsQueryHandler(IApplicationDbContext dbContext, IMapper mapper, IUserContextService userContextService)
+    public GetUserDetailsQueryHandler(IApplicationDbContext dbContext, IMapper mapper, IUserContextService userContextService, IDateTimeProvider dateTimeProvider)
     {
         _dbContext = dbContext;
         _mapper = mapper;
         _userContextService = userContextService;
+        _dateTimeProvider = dateTimeProvider;
     }
     
     public async Task<UserDetails> Handle(GetUserDetailsCommand request, CancellationToken cancellationToken)
@@ -43,6 +45,7 @@ public class GetUserDetailsQueryHandler : IRequestHandler<GetUserDetailsCommand,
 
         var recentMeetings = user.MeetingParticipants
             .Where(x => x.InvitationStatus == InvitationStatus.Accepted)
+            .Where(x => x.Meeting!.EndDateTimeUtc < _dateTimeProvider.UtcNow)
             .OrderByDescending(x => x.Meeting!.StartDateTimeUtc)
             .Take(3)
             .Select(x => x.Meeting)

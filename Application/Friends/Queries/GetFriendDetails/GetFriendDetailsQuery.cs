@@ -18,12 +18,14 @@ public class GetFriendDetailsQueryHandler : IRequestHandler<GetFriendDetailsQuer
     private readonly IApplicationDbContext _dbContext;
     private readonly IUserContextService _userContextService;
     private readonly IMapper _mapper;
+    private readonly IDateTimeProvider _dateTimeProvider;
 
-    public GetFriendDetailsQueryHandler(IApplicationDbContext dbContext, IUserContextService userContextService, IMapper mapper)
+    public GetFriendDetailsQueryHandler(IApplicationDbContext dbContext, IUserContextService userContextService, IMapper mapper, IDateTimeProvider dateTimeProvider)
     {
         _dbContext = dbContext;
         _userContextService = userContextService;
         _mapper = mapper;
+        _dateTimeProvider = dateTimeProvider;
     }
     
     public async Task<FriendDetailsDto> Handle(GetFriendDetailsQuery request, CancellationToken cancellationToken)
@@ -49,26 +51,32 @@ public class GetFriendDetailsQueryHandler : IRequestHandler<GetFriendDetailsQuer
 
         var recentMeetings = friend.MeetingParticipants
             .Where(x => x.InvitationStatus == InvitationStatus.Accepted)
-            .Where(x => x.Meeting.Visibility == MeetingVisibility.Public || x.Meeting.MeetingParticipants.Any(participant => participant.ParticipantId == userId && participant.InvitationStatus == InvitationStatus.Accepted))
+            .Where(x => x.Meeting!.EndDateTimeUtc < _dateTimeProvider.UtcNow)
+            .Where(x => x.Meeting!.Visibility == MeetingVisibility.Public || x.Meeting.MeetingParticipants.Any(participant => participant.ParticipantId == userId && participant.InvitationStatus == InvitationStatus.Accepted))
             .OrderByDescending(x => x.Meeting!.StartDateTimeUtc)
-            .Take(3)
+            .Take(1)
             .Select(x => x.Meeting)
             .ToList();
 
         friendDetailsDto.RecentMeetings = _mapper.Map<List<MeetingPinDto>>(recentMeetings);
         
-        var friendship = user.AsInvitee.Where(x => x.InviterId == request.Id)
-            .Union(user.AsInviter.Where(x => x.InviteeId == request.Id))
-            .OrderByDescending(x => x.StatusDateTimeUtc)
-            .ToList();
+        var lastFriendship = user.AsInvitee.Where(x => x.InviterId == request.Id)
+            .Union(user.AsInviter.Where(x => x.InviteeId == request.Id)).MaxBy(x => x.StatusDateTimeUtc);
 
-        if (!friendship.Any() || friendship.First().FriendshipStatus != FriendshipStatus.Accepted)
+        if (lastFriendship == null) return friendDetailsDto;
+        
+        
+        if (lastFriendship.FriendshipStatus != FriendshipStatus.Accepted)
         {
             friendDetailsDto.FirstName = null;
             friendDetailsDto.LastName = null;
             friendDetailsDto.Age = null;
             friendDetailsDto.Gender = null;
         }
+
+        friendDetailsDto.FriendshipStatusDto.Status = lastFriendship.FriendshipStatus;
+        friendDetailsDto.FriendshipStatusDto.IsOriginated = lastFriendship.InviterId == userId;
+
         return friendDetailsDto;
     }
 }
