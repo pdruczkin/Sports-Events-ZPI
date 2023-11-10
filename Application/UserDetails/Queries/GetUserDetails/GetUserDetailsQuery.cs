@@ -47,7 +47,7 @@ public class GetUserDetailsQueryHandler : IRequestHandler<GetUserDetailsCommand,
             .Where(x => x.InvitationStatus == InvitationStatus.Accepted)
             .Where(x => x.Meeting!.EndDateTimeUtc < _dateTimeProvider.UtcNow)
             .OrderByDescending(x => x.Meeting!.StartDateTimeUtc)
-            .Take(3)
+            .Take(1)
             .Select(x => x.Meeting)
             .ToList();
 
