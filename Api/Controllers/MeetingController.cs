@@ -2,6 +2,7 @@
 using Application.Meetings.Commands.CreateMeeting;
 using Application.Meetings.Commands.DeleteMeeting;
 using Application.Meetings.Commands.JoinMeeting;
+using Application.Meetings.Commands.LeaveMeeting;
 using Application.Meetings.Commands.RejectInvitation;
 using Application.Meetings.Commands.SendInvitation;
 using Application.Meetings.Commands.UpdateMeetingData;
@@ -32,7 +33,7 @@ namespace Api.Controllers
 
             return Ok();
         }
-         
+
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(Guid id)
         {
@@ -41,7 +42,8 @@ namespace Api.Controllers
         }
 
         [HttpGet("upcoming")]
-        public async Task<ActionResult<List<UpcomingMeetingItemDto>>> GetUpcomingUserMeetings([FromQuery] GetUpcomingMeetingsQuery request)
+        public async Task<ActionResult<List<UpcomingMeetingItemDto>>> GetUpcomingUserMeetings(
+            [FromQuery] GetUpcomingMeetingsQuery request)
         {
             var upcomingMeetingsDtos = await Mediator.Send(request);
             return Ok(upcomingMeetingsDtos);
@@ -56,26 +58,35 @@ namespace Api.Controllers
 
         [AllowAnonymous]
         [HttpGet("list")]
-        public async Task<ActionResult<List<MeetingListItemDto>>> GetAllMeetingListItems([FromQuery] GetMeetingListItemsQuery request)
+        public async Task<ActionResult<List<MeetingListItemDto>>> GetAllMeetingListItems(
+            [FromQuery] GetMeetingListItemsQuery request)
         {
             var meetingListItemsDtos = await Mediator.Send(request);
             return Ok(meetingListItemsDtos);
         }
 
         [HttpGet("history")]
-        public async Task<ActionResult<PagedResult<MeetingHistoryItemDto>>> GetMeetingsHistory([FromQuery] GetMeetingsHistoryQuery request)
+        public async Task<ActionResult<PagedResult<MeetingHistoryItemDto>>> GetMeetingsHistory(
+            [FromQuery] GetMeetingsHistoryQuery request)
         {
             var meetingsHistoryDtos = await Mediator.Send(request);
             return Ok(meetingsHistoryDtos);
         }
-        
+
         [HttpPost("{meetingId:guid}/join")]
         public async Task<ActionResult> JoinMeeting([FromRoute] Guid meetingId)
         {
             await Mediator.Send(new JoinMeetingCommand() { MeetingId = meetingId });
             return NoContent();
         }
-        
+
+        [HttpPost("{meetingId:guid}/leave")]
+        public async Task<ActionResult> LeaveMeeting([FromRoute] Guid meetingId)
+        {
+            await Mediator.Send(new LeaveMeetingCommand { MeetingId = meetingId });
+            return NoContent();
+        }
+
         [HttpPost("{meetingId:guid}/reject")]
         public async Task<ActionResult> RejectMeetingInvitation([FromRoute] Guid meetingId)
         {

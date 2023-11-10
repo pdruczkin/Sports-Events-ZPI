@@ -22,5 +22,5 @@ public class MeetingPinDto : IMappable<Meeting>
     {
         profile.CreateMap<Meeting, MeetingPinDto>()
             .ForMember(x => x.OrganizerUsername, o => o.MapFrom(s => s.Organizer.Username));
-    }
+    } 
 }
