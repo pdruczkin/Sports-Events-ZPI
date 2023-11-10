@@ -78,6 +78,8 @@ public class GetUpcomingMeetingsQueryHandler : IRequestHandler<GetUpcomingMeetin
 
         var meetingListItemsDtos = _mapper.Map<List<UpcomingMeetingItemDto>>(filteredMeetings);
 
+        meetingListItemsDtos.ForEach(x => x.CurrentParticipantsQuantity = _applicationDbContext.CountMeetingParticipantsQuantity(x.Id));
+
         return meetingListItemsDtos;
     }
 
