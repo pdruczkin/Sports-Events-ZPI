@@ -71,6 +71,8 @@ public class GetAllMeetingListItemsQueryHandler : IRequestHandler<GetMeetingList
 
         var meetingListItemsDtos = _mapper.Map<List<MeetingListItemDto>>(filteredMeetings);
 
+        meetingListItemsDtos.ForEach(x => x.CurrentParticipantsQuantity = _applicationDbContext.CountMeetingParticipantsQuantity(x.Id));
+
         return meetingListItemsDtos;
     }
 
