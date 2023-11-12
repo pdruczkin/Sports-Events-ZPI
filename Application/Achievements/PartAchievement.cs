@@ -1,8 +1,8 @@
 ﻿using Application.Common.Exceptions;
-using Application.Common.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using Domain.Enums;
 using Application.Common.ExtensionMethods;
+using Application.Common.Interfaces;
+using Domain.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Achievements;
 

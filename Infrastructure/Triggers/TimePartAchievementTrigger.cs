@@ -19,6 +19,9 @@ public class TimePartAchievementTrigger : IAfterSaveTrigger<Meeting>
         {
             BackgroundJob.Schedule<PartAchievement>(x => x.CheckPartAchievement(context.Entity.Id, cancellationToken),
                 context.Entity.EndDateTimeUtc - _dateTimeProvider.UtcNow);
+
+            BackgroundJob.Schedule<TimeAchievement>(x => x.CheckTimeAchievement(context.Entity.Id, cancellationToken),
+                context.Entity.EndDateTimeUtc - _dateTimeProvider.UtcNow);
         }
     }
 }
