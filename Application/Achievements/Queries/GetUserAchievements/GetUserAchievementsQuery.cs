@@ -43,7 +43,6 @@ public class GetUserAchievementsQueryHandler : IRequestHandler<GetUserAchievemen
                 AchievementDetailsDto = new AchievementDetailsDto()
                 {
                     Id = ua.AchievementId,
-                    Name = ua.Achievement.Name,
                     Description = ua.Achievement.Description,
                     Obtained = ua.Obtained
                 }

@@ -2,6 +2,7 @@
 using Application.Common.Models;
 using Infrastructure.Persistence;
 using Infrastructure.Services;
+using Infrastructure.Triggers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,10 +18,16 @@ public static class ConfigureServices
         services.AddSingleton(emailSenderSettings);
         
         
-        services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DbConnection"),
-                    builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
-        
+        services.AddDbContext<ApplicationDbContext>(options => {
+            options.UseSqlServer(configuration.GetConnectionString("DbConnection"),
+                builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
+
+            options.UseTriggers(triggerOptions => {
+                /* triggerOptions.AddTrigger<SetCreatedOnDate>();
+                 triggerOptions.AddTrigger<CreateWelcomeEmail>();*/
+                triggerOptions.AddTrigger<SendEmailTestTrigger>();
+            });
+        });
 
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
         services.AddScoped<ApplicationDbContextInitializer>();
