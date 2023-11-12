@@ -12,6 +12,6 @@ namespace Application.Achievements.Queries.GetAllAchievements;
 
 public class GroupedAchievementsDto : IMappable<Achievement>
 {
-    public AchievementCategory Category { get; set; }
+    public string Category { get; set; }
     public IEnumerable<AchievementDetailsDto> Achievements { get; set; }
 }

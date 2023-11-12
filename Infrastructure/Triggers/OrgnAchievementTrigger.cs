@@ -34,7 +34,7 @@ public class OrgnAchievementTrigger : IAfterSaveTrigger<Meeting>
                     await _dbContext.UserAchievements.AddAsync(new UserAchievement()
                     {
                         UserId = organizerId,
-                        AchievementId = "ORGA50",
+                        AchievementId = "ORGN50",
                         Obtained = _dateTimeProvider.Now
                     });
                     await _dbContext.SaveChangesAsync(cancellationToken);
@@ -44,7 +44,7 @@ public class OrgnAchievementTrigger : IAfterSaveTrigger<Meeting>
                     await _dbContext.UserAchievements.AddAsync(new UserAchievement()
                     {
                         UserId = organizerId,
-                        AchievementId = "ORGA10",
+                        AchievementId = "ORGN10",
                         Obtained = _dateTimeProvider.Now
                     });
                     await _dbContext.SaveChangesAsync(cancellationToken);
@@ -54,7 +54,7 @@ public class OrgnAchievementTrigger : IAfterSaveTrigger<Meeting>
                     await _dbContext.UserAchievements.AddAsync(new UserAchievement()
                     {
                         UserId = organizerId,
-                        AchievementId = "ORGA05",
+                        AchievementId = "ORGN05",
                         Obtained = _dateTimeProvider.Now
                     });
                     await _dbContext.SaveChangesAsync(cancellationToken);
@@ -64,7 +64,7 @@ public class OrgnAchievementTrigger : IAfterSaveTrigger<Meeting>
                     await _dbContext.UserAchievements.AddAsync(new UserAchievement()
                     {
                         UserId = organizerId,
-                        AchievementId = "ORGA01",
+                        AchievementId = "ORGN01",
                         Obtained = _dateTimeProvider.Now
                     });
                     await _dbContext.SaveChangesAsync(cancellationToken);

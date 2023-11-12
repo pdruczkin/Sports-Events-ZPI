@@ -39,7 +39,7 @@ public class GetUserAchievementsQueryHandler : IRequestHandler<GetUserAchievemen
         var groupedUserAchievements = userAchievements
             .Select(ua => new
             {
-                Category = ua.Achievement.Category,
+                Category = ua.Achievement.Category.ToString(),
                 AchievementDetailsDto = new AchievementDetailsDto()
                 {
                     Id = ua.AchievementId,

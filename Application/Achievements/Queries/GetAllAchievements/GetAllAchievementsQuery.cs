@@ -27,7 +27,7 @@ public class GetAllAchievementsHandler : IRequestHandler<GetAllAchievementsQuery
             .GroupBy (x => x.Category)
             .Select(x => new GroupedAchievementsDto()
             {
-                Category = x.Key,
+                Category = x.Key.ToString(),
                 Achievements = _mapper.Map< List<AchievementDetailsDto>>(x.ToList())
             })
             .ToListAsync(cancellationToken);

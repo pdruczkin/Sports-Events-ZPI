@@ -26,6 +26,7 @@ public static class ConfigureServices
                 /* triggerOptions.AddTrigger<SetCreatedOnDate>();
                  triggerOptions.AddTrigger<CreateWelcomeEmail>();*/
                 triggerOptions.AddTrigger<SendEmailTestTrigger>();
+                triggerOptions.AddTrigger<OrgnAchievementTrigger>();
             });
         });
 
