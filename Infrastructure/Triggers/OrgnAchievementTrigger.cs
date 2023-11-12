@@ -1,5 +1,5 @@
-﻿using Application.Common.Interfaces;
-using Application.Common.Models;
+﻿using Application.Common.ExtensionMethods;
+using Application.Common.Interfaces;
 using Domain.Entities;
 using EntityFrameworkCore.Triggered;
 using Microsoft.EntityFrameworkCore;
@@ -27,62 +27,24 @@ public class OrgnAchievementTrigger : IAfterSaveTrigger<Meeting>
                 .Meetings
                 .CountAsync(x => x.OrganizerId == organizerId, cancellationToken);
 
-            if (organizedMeetingsCount <= 50)
+            if (organizedMeetingsCount == 50)
             {
-                if(organizedMeetingsCount == 50)
-                {
-                    await _dbContext.UserAchievements.AddAsync(new UserAchievement()
-                    {
-                        UserId = organizerId,
-                        AchievementId = "ORGN50",
-                        Obtained = _dateTimeProvider.Now
-                    });
-                    await _dbContext.SaveChangesAsync(cancellationToken);
-                }
-                else if(organizedMeetingsCount == 10)
-                {
-                    await _dbContext.UserAchievements.AddAsync(new UserAchievement()
-                    {
-                        UserId = organizerId,
-                        AchievementId = "ORGN10",
-                        Obtained = _dateTimeProvider.Now
-                    });
-                    await _dbContext.SaveChangesAsync(cancellationToken);
-                }
-                else if(organizedMeetingsCount == 5)
-                {
-                    await _dbContext.UserAchievements.AddAsync(new UserAchievement()
-                    {
-                        UserId = organizerId,
-                        AchievementId = "ORGN05",
-                        Obtained = _dateTimeProvider.Now
-                    });
-                    await _dbContext.SaveChangesAsync(cancellationToken);
-                }
-                else if(organizedMeetingsCount == 1)
-                {
-                    await _dbContext.UserAchievements.AddAsync(new UserAchievement()
-                    {
-                        UserId = organizerId,
-                        AchievementId = "ORGN01",
-                        Obtained = _dateTimeProvider.Now
-                    });
-                    await _dbContext.SaveChangesAsync(cancellationToken);
-                }
+                await _dbContext.AddAchievementAsync(organizerId, "ORGN50", _dateTimeProvider, cancellationToken);
             }
-            /*
-            await _emailSendService.SendEmailAsync(new EmailDto() {
-                To = "260369@student.pwr.edu.pl",
-                Body = "TEST EMAIL - tekst",
-                Subject = "TEST EMAIL"
-            }); // Initial email*/
+            else if (organizedMeetingsCount == 10)
+            {
+                await _dbContext.AddAchievementAsync(organizerId, "ORGN10", _dateTimeProvider, cancellationToken);
+            }
+            else if (organizedMeetingsCount == 5)
+            {
+                await _dbContext.AddAchievementAsync(organizerId, "ORGN5", _dateTimeProvider, cancellationToken);
+            }
+            else if (organizedMeetingsCount == 1)
+            {
+                await _dbContext.AddAchievementAsync(organizerId, "ORGN1", _dateTimeProvider, cancellationToken);
+            }
         }
-        /*
-        else if (context.ChangeType == ChangeType.Modified && context.Entity.Message != context.UnmodifiedEntity.Message)
-        {
-            _emailSendService.Send(email); // In case the content was updated we want to resent this email
-        }*/
 
-        return;// Task.FromResult();
+        return;
     }
 }
