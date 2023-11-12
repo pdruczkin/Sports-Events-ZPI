@@ -37,11 +37,11 @@ public class OrgnAchievementTrigger : IAfterSaveTrigger<Meeting>
             }
             else if (organizedMeetingsCount == 5)
             {
-                await _dbContext.AddAchievementAsync(organizerId, "ORGN5", _dateTimeProvider, cancellationToken);
+                await _dbContext.AddAchievementAsync(organizerId, "ORGN05", _dateTimeProvider, cancellationToken);
             }
             else if (organizedMeetingsCount == 1)
             {
-                await _dbContext.AddAchievementAsync(organizerId, "ORGN1", _dateTimeProvider, cancellationToken);
+                await _dbContext.AddAchievementAsync(organizerId, "ORGN01", _dateTimeProvider, cancellationToken);
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interfaces;
 using Application.Common.Models;
+using Hangfire;
 using Infrastructure.Persistence;
 using Infrastructure.Services;
 using Infrastructure.Triggers;
@@ -16,16 +17,24 @@ public static class ConfigureServices
         var emailSenderSettings = new EmailSenderSettings();
         configuration.GetSection("EmailSender").Bind(emailSenderSettings);
         services.AddSingleton(emailSenderSettings);
-        
-        
+
+        services.AddHangfire(config => config
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
+
+        services.AddHangfireServer();
+
         services.AddDbContext<ApplicationDbContext>(options => {
             options.UseSqlServer(configuration.GetConnectionString("DbConnection"),
                 builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
 
             options.UseTriggers(triggerOptions => {
                 triggerOptions.AddTrigger<SendEmailTestTrigger>();
-                triggerOptions.AddTrigger<OrgnAchievementTrigger>(); 
+                triggerOptions.AddTrigger<OrgnAchievementTrigger>();
                 triggerOptions.AddTrigger<FrieAchievementTrigger>();
+                triggerOptions.AddTrigger<TimePartAchievementTrigger>();
             });
         });
 

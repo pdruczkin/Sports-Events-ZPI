@@ -1,5 +1,4 @@
-﻿using Application.Achievements.Queries.GetAllAchievements;
-using Application.Common.Exceptions;
+﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Models;
 using AutoMapper;

@@ -32,7 +32,7 @@ public static class ExtensionMethods
             {
                 UserId = userId,
                 AchievementId = achievementId,
-                Obtained = dateTimeProvider.Now
+                Obtained = dateTimeProvider.UtcNow
             });
             await dbContext.SaveChangesAsync(cancellationToken);
         }

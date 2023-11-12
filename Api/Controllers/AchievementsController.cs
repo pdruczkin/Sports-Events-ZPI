@@ -1,5 +1,6 @@
 ﻿using Application.Achievements.Queries.GetAllAchievements;
 using Application.Achievements.Queries.GetUserAchievements;
+using Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
