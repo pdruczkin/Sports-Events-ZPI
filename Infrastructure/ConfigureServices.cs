@@ -23,10 +23,9 @@ public static class ConfigureServices
                 builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
 
             options.UseTriggers(triggerOptions => {
-                /* triggerOptions.AddTrigger<SetCreatedOnDate>();
-                 triggerOptions.AddTrigger<CreateWelcomeEmail>();*/
                 triggerOptions.AddTrigger<SendEmailTestTrigger>();
-                triggerOptions.AddTrigger<OrgnAchievementTrigger>();
+                triggerOptions.AddTrigger<OrgnAchievementTrigger>(); 
+                triggerOptions.AddTrigger<FrieAchievementTrigger>();
             });
         });
 

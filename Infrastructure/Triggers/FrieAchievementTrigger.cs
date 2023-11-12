@@ -81,11 +81,11 @@ public class FrieAchievementTrigger : IAfterSaveTrigger<Friendship>
         }
         else if (friendsCount == 5)
         {
-            await _dbContext.AddAchievementAsync(userId, "FRIE5", _dateTimeProvider, cancellationToken);
+            await _dbContext.AddAchievementAsync(userId, "FRIE05", _dateTimeProvider, cancellationToken);
         }
         else if (friendsCount == 1)
         {
-            await _dbContext.AddAchievementAsync(userId, "FRIE1", _dateTimeProvider, cancellationToken);
+            await _dbContext.AddAchievementAsync(userId, "FRIE01", _dateTimeProvider, cancellationToken);
         }
     }
 }
