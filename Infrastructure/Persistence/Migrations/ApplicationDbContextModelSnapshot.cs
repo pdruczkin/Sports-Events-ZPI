@@ -22,6 +22,23 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Domain.Entities.Achievement", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Category")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Achievements");
+                });
+
             modelBuilder.Entity("Domain.Entities.Friendship", b =>
                 {
                     b.Property<Guid>("Id")
@@ -203,6 +220,26 @@ namespace Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Domain.Entities.UserAchievement", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AchievementId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Obtained")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.HasKey("UserId", "AchievementId");
+
+                    b.HasIndex("AchievementId");
+
+                    b.ToTable("UserAchievements");
+                });
+
             modelBuilder.Entity("Domain.Entities.Friendship", b =>
                 {
                     b.HasOne("Domain.Entities.User", "Invitee")
@@ -249,7 +286,7 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Meeting", "Meeting")
                         .WithMany("MeetingParticipants")
                         .HasForeignKey("MeetingId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.User", "Participant")
@@ -261,6 +298,30 @@ namespace Infrastructure.Migrations
                     b.Navigation("Meeting");
 
                     b.Navigation("Participant");
+                });
+
+            modelBuilder.Entity("Domain.Entities.UserAchievement", b =>
+                {
+                    b.HasOne("Domain.Entities.Achievement", "Achievement")
+                        .WithMany("UserAchievements")
+                        .HasForeignKey("AchievementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany("UserAchievements")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Achievement");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Achievement", b =>
+                {
+                    b.Navigation("UserAchievements");
                 });
 
             modelBuilder.Entity("Domain.Entities.Meeting", b =>
@@ -279,6 +340,8 @@ namespace Infrastructure.Migrations
                     b.Navigation("MeetingParticipants");
 
                     b.Navigation("OrganizedEvents");
+
+                    b.Navigation("UserAchievements");
                 });
 #pragma warning restore 612, 618
         }

@@ -75,6 +75,25 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Image",
+                columns: table => new
+                {
+                    PublicId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Image", x => x.PublicId);
+                    table.ForeignKey(
+                        name: "FK_Image_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Meetings",
                 columns: table => new
                 {
@@ -145,7 +164,8 @@ namespace Infrastructure.Migrations
                         name: "FK_MeetingParticipants_Meetings_MeetingId",
                         column: x => x.MeetingId,
                         principalTable: "Meetings",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_MeetingParticipants_Users_ParticipantId",
                         column: x => x.ParticipantId,
@@ -162,6 +182,12 @@ namespace Infrastructure.Migrations
                 name: "IX_Friendships_InviterId",
                 table: "Friendships",
                 column: "InviterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Image_UserId",
+                table: "Image",
+                column: "UserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_MeetingParticipants_MeetingId",
@@ -184,6 +210,9 @@ namespace Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Friendships");
+
+            migrationBuilder.DropTable(
+                name: "Image");
 
             migrationBuilder.DropTable(
                 name: "MeetingParticipants");
