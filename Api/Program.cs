@@ -21,6 +21,7 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseHangfireDashboard();
     // Initialise and seed database
     using (var scope = app.Services.CreateScope())
     {
@@ -31,8 +32,6 @@ if (app.Environment.IsDevelopment())
     
     app.UseSwagger();
     app.UseSwaggerUI();
-
-    app.UseHangfireDashboard();
 }
 
 app.UseAuthentication();
