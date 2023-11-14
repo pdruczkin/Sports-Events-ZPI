@@ -11,7 +11,7 @@ namespace Application.UserDetails.Commands.AddImage;
 
 public class AddImageCommand : IRequest<ImageDto>
 {
-    public IFormFile File { get; set; } = null;
+    public IFormFile? File { get; set; }
 }
 
 public class AddImageCommandHandler : IRequestHandler<AddImageCommand, ImageDto>
