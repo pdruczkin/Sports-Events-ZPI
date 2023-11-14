@@ -2,7 +2,6 @@
 using Application.Common.Exceptions;
 using Application.Common.ExtensionMethods;
 using Application.Common.Interfaces;
-using Application.Common.Models;
 using Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
 using AutoMapper;
 using Domain.Entities;
@@ -13,7 +12,7 @@ using System.Linq.Expressions;
 
 namespace Application.Meetings.Queries.UpcomingUserMeetings;
 
-public class GetUpcomingMeetingsQuery : IRequest<PagedResult<UpcomingMeetingItemDto>>
+public class GetUpcomingMeetingsQuery : IRequest<List<UpcomingMeetingItemDto>>
 {
     public DateTime? StartDateTimeUtcFrom { get; set; }
     public DateTime? StartDateTimeUtcTo { get; set; }
@@ -27,13 +26,11 @@ public class GetUpcomingMeetingsQuery : IRequest<PagedResult<UpcomingMeetingItem
     public int? MinParticipantsAgeTo { get; set; }
     public string? TitleSearchPhrase { get; set; }
     public bool AsOrganizer { get; set; }
-    public int PageNumber { get; set; }
-    public int PageSize { get; set; }
     public string? SortBy { get; set; }
     public SortDirection? SortDirection { get; set; }
 }
 
-public class GetUpcomingMeetingsQueryHandler : IRequestHandler<GetUpcomingMeetingsQuery, PagedResult<UpcomingMeetingItemDto>>
+public class GetUpcomingMeetingsQueryHandler : IRequestHandler<GetUpcomingMeetingsQuery, List<UpcomingMeetingItemDto>>
 {
     private readonly IApplicationDbContext _applicationDbContext;
     private readonly IMapper _mapper;
@@ -52,7 +49,7 @@ public class GetUpcomingMeetingsQueryHandler : IRequestHandler<GetUpcomingMeetin
             .ForMember(dto => dto.OrganizerUsername, o => o.MapFrom(m => m.Organizer.Username));
     }
 
-    public async Task<PagedResult<UpcomingMeetingItemDto>> Handle(GetUpcomingMeetingsQuery request, CancellationToken cancellationToken)
+    public async Task<List<UpcomingMeetingItemDto>> Handle(GetUpcomingMeetingsQuery request, CancellationToken cancellationToken)
     {
         var userId = _userContextService.GetUserId;
         var user = await _applicationDbContext.Users.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
@@ -77,25 +74,13 @@ public class GetUpcomingMeetingsQueryHandler : IRequestHandler<GetUpcomingMeetin
                 : filteredMeetingsBaseQuery.OrderByDescending(selectedColumn);
         }
 
-        var filteredMeetingsPaged = await GetPagedMeetings(filteredMeetingsBaseQuery, request.PageSize, request.PageNumber);
+        var filteredMeetings = await filteredMeetingsBaseQuery.ToListAsync(cancellationToken);
 
-        var totalMeetingsCount = filteredMeetingsBaseQuery.Count();
+        var meetingListItemsDtos = _mapper.Map<List<UpcomingMeetingItemDto>>(filteredMeetings);
 
-        var meetingListItemsDtos = _mapper.Map<List<UpcomingMeetingItemDto>>(filteredMeetingsPaged);
+        meetingListItemsDtos.ForEach(x => x.CurrentParticipantsQuantity = _applicationDbContext.CountMeetingParticipantsQuantity(x.Id));
 
-        var pagedResult = new PagedResult<UpcomingMeetingItemDto>(meetingListItemsDtos, totalMeetingsCount, request.PageNumber, request.PageSize);
-
-        return pagedResult;
-    }
-
-    private async Task<List<Meeting>> GetPagedMeetings(IQueryable<Meeting> query, int pageSize, int pageNumber)
-    {
-        var pagedMeetings = await query
-            .Skip(pageSize * (pageNumber - 1))
-            .Take(pageSize)
-            .ToListAsync();
-
-        return pagedMeetings;
+        return meetingListItemsDtos;
     }
 
     private IQueryable<Meeting> GetFilteredMeetingsQuery(GetUpcomingMeetingsQuery request, User user)

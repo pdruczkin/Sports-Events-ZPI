@@ -82,6 +82,8 @@ public class GetMeetingsHistoryQueryHandler : IRequestHandler<GetMeetingsHistory
         var totalMeetingsCount = filteredMeetingsBaseQuery.Count();
 
         var meetingListItemsDtos = _mapper.Map<List<MeetingHistoryItemDto>>(filteredMeetingsPaged);
+        
+        meetingListItemsDtos.ForEach(x => x.FinalParticipantsQuantity = _applicationDbContext.CountMeetingParticipantsQuantity(x.Id));
 
         var pagedResult = new PagedResult<MeetingHistoryItemDto>(meetingListItemsDtos, totalMeetingsCount, request.PageNumber, request.PageSize);
 

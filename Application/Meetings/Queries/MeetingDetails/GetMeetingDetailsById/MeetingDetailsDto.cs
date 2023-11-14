@@ -25,7 +25,7 @@ public class MeetingDetailsDto : IMappable<Meeting>
     public bool IsOrganizer { get; set; }
 
     public UserIdentityDto Organizer { get; set; }
-    public List<UserIdentityDto> MeetingParticipants { get; set; }
+    public List<ParticipantIdentityDto> MeetingParticipants { get; set; }
     
     public void Mapping(Profile profile)
     {

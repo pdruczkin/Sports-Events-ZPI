@@ -4,16 +4,19 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Infrastructure.Migrations
+namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231030181901_Add Image Entity")]
+    partial class AddImageEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,6 +67,27 @@ namespace Infrastructure.Migrations
                     b.HasIndex("InviterId");
 
                     b.ToTable("Friendships");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Image", b =>
+                {
+                    b.Property<string>("PublicId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("PublicId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Image");
                 });
 
             modelBuilder.Entity("Domain.Entities.Meeting", b =>
@@ -238,6 +262,17 @@ namespace Infrastructure.Migrations
                     b.Navigation("Inviter");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Image", b =>
+                {
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithOne("Image")
+                        .HasForeignKey("Domain.Entities.Image", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Entities.Meeting", b =>
                 {
                     b.HasOne("Domain.Entities.User", "Organizer")
@@ -302,6 +337,8 @@ namespace Infrastructure.Migrations
                     b.Navigation("AsInvitee");
 
                     b.Navigation("AsInviter");
+
+                    b.Navigation("Image");
 
                     b.Navigation("MeetingParticipants");
 

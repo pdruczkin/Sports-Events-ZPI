@@ -30,5 +30,7 @@ public class User
 
     public List<Friendship> AsInviter { get; set; }
     public List<Friendship> AsInvitee { get; set; }
+    
+    public Image? Image { get; set; }
 
 }
