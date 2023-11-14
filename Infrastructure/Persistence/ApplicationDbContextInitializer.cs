@@ -1,7 +1,6 @@
 ﻿using Application.Common.Interfaces;
 using Domain.Entities;
 using Domain.Enums;
-using Infrastructure.Migrations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
