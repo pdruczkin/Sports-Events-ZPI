@@ -10,7 +10,6 @@ using Application.Meetings.Queries.MeetingHistory;
 using Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
 using Application.Meetings.Queries.MeetingPin.GetMeetingPinDetailsById;
 using Application.Meetings.Queries.UpcomingUserMeetings;
-using Application.UserDetails.Commands.ChangeUserDetails;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

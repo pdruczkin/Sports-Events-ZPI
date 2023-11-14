@@ -1,8 +1,7 @@
-﻿using Application.Common.ExtensionMethods;
+﻿using Application.Achievements;
 using Application.Common.Interfaces;
 using Domain.Entities;
 using EntityFrameworkCore.Triggered;
-using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Triggers;
 
@@ -21,30 +20,8 @@ public class OrgnAchievementTrigger : IAfterSaveTrigger<Meeting>
     {
         if (context.ChangeType == ChangeType.Added)
         {
-            var organizerId = context.Entity.OrganizerId;
-
-            var organizedMeetingsCount = await _dbContext
-                .Meetings
-                .CountAsync(x => x.OrganizerId == organizerId, cancellationToken);
-
-            if (organizedMeetingsCount == 50)
-            {
-                await _dbContext.AddAchievementAsync(organizerId, "ORGN50", _dateTimeProvider, cancellationToken);
-            }
-            else if (organizedMeetingsCount == 10)
-            {
-                await _dbContext.AddAchievementAsync(organizerId, "ORGN10", _dateTimeProvider, cancellationToken);
-            }
-            else if (organizedMeetingsCount == 5)
-            {
-                await _dbContext.AddAchievementAsync(organizerId, "ORGN05", _dateTimeProvider, cancellationToken);
-            }
-            else if (organizedMeetingsCount == 1)
-            {
-                await _dbContext.AddAchievementAsync(organizerId, "ORGN01", _dateTimeProvider, cancellationToken);
-            }
+            var orgnAchievementChecker = new OrgnAchievement(_dbContext, _dateTimeProvider);
+            await orgnAchievementChecker.CheckOrgnAchievementAsync(context.Entity.Id, cancellationToken);
         }
-
-        return;
     }
 }
