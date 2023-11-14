@@ -4,7 +4,6 @@ using Application;
 using Infrastructure;
 using Infrastructure.Hubs;
 using Infrastructure.Persistence;
-using ConfigureServices = Api.ConfigureServices;
 
 
 var builder = WebApplication.CreateBuilder(args);
