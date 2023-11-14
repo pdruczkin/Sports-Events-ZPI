@@ -1,6 +1,7 @@
 using Api;
 using Api.Middleware;
 using Application;
+using Hangfire;
 using Infrastructure;
 using Infrastructure.Persistence;
 
@@ -30,6 +31,8 @@ if (app.Environment.IsDevelopment())
     
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.UseHangfireDashboard();
 }
 
 app.UseAuthentication();

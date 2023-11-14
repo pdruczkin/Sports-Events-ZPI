@@ -26,6 +26,8 @@ public class User
     
     public ICollection<MeetingParticipant> MeetingParticipants { get; } = new List<MeetingParticipant>();
     
+    public ICollection<UserAchievement> UserAchievements { get; set; } = new List<UserAchievement>();
+
     public List<Friendship> AsInviter { get; set; }
     public List<Friendship> AsInvitee { get; set; }
     
