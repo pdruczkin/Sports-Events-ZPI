@@ -1,5 +1,7 @@
 ﻿using Application.Achievements.Queries.GetAllAchievements;
+using Application.Achievements.Queries.GetAllWithFriendAchievements;
 using Application.Achievements.Queries.GetAllWithUserAchievements;
+using Application.Achievements.Queries.GetFriendAchievements;
 using Application.Achievements.Queries.GetUserAchievements;
 using Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -29,5 +31,19 @@ public class AchievementsController : ApiControllerBase
     {
         var groupedAllWithUserAchievements = await Mediator.Send(new GetAllWithUserAchievementsQuery());
         return Ok(groupedAllWithUserAchievements);
+    }
+
+    [HttpGet("{friendId}/user_achievements")]
+    public async Task<ActionResult<List<GroupedAchievementsDto>>> GetFriendAchievements(Guid friendId)
+    {
+        var groupedUserAchievements = await Mediator.Send(new GetFriendAchievementsQuery() { FriendId = friendId});
+        return Ok(groupedUserAchievements);
+    }
+
+    [HttpGet("{friendId}")]
+    public async Task<ActionResult<List<GroupedAchievementsDto>>> GetAllWithFriendAchievements(Guid friendId)
+    {
+        var groupedUserAchievements = await Mediator.Send(new GetAllWithFriendAchievementsQuery() { FriendId = friendId });
+        return Ok(groupedUserAchievements);
     }
 }
