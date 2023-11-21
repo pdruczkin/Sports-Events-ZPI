@@ -80,8 +80,8 @@ public class GetFriendDetailsQueryHandler : IRequestHandler<GetFriendDetailsQuer
             friendDetailsDto.Gender = null;
         }
 
-        friendDetailsDto.FriendshipStatusDto.Status = lastFriendship.FriendshipStatus;
-        friendDetailsDto.FriendshipStatusDto.IsOriginated = lastFriendship.InviterId == userId;
+        friendDetailsDto.FriendshipStatusDto.Status = lastFriendship is null ? null : lastFriendship.FriendshipStatus;
+        friendDetailsDto.FriendshipStatusDto.IsOriginated = lastFriendship is null ? null : lastFriendship.InviterId == userId;
 
         return friendDetailsDto;
     }

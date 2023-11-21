@@ -8,6 +8,7 @@ using Application.Meetings.Commands.RemoveUserFromMeeting;
 using Application.Meetings.Commands.SendInvitation;
 using Application.Meetings.Commands.UpdateMeetingData;
 using Application.Meetings.Queries.GetMeetingsInvitations;
+using Application.Meetings.Queries.GetRecentFriendMeetings;
 using Application.Meetings.Queries.MeetingDetails.GetMeetingDetailsById;
 using Application.Meetings.Queries.MeetingHistory;
 using Application.Meetings.Queries.MeetingListItem.GetAllMeetingListItems;
@@ -65,13 +66,20 @@ namespace Api.Controllers
             var meetingListItemsDtos = await Mediator.Send(request);
             return Ok(meetingListItemsDtos);
         }
-
+        
         [HttpGet("history")]
         public async Task<ActionResult<PagedResult<MeetingHistoryItemDto>>> GetMeetingsHistory(
             [FromQuery] GetMeetingsHistoryQuery request)
         {
             var meetingsHistoryDtos = await Mediator.Send(request);
             return Ok(meetingsHistoryDtos);
+        }
+
+        [HttpGet("recent/{friendId}")]
+        public async Task<ActionResult<List<MeetingPinDto>>> GetRecentFriendMeetings(Guid friendId)
+        {
+            var friendRecentMeetingsDtos = await Mediator.Send(new GetRecentFriendMeetingsQuery() { FriendId = friendId });
+            return Ok(friendRecentMeetingsDtos);
         }
 
         [HttpPost("{meetingId:guid}/join")]
