@@ -29,6 +29,7 @@ public class SearchUsersQueryHandler : IRequestHandler<SearchUsersQuery, List<Us
 
         var users = await _applicationDbContext
             .Users
+            .Include(x => x.Image)
             .Where(x => x.Username.ToLower().Contains(request.SearchPhrase.ToLower()))
             .Where(x => x.Id != userId)
             .Take(20)
