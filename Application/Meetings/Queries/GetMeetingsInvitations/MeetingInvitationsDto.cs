@@ -1,5 +1,6 @@
 ﻿using Application.Account.Commands.RegisterUser;
 using Application.Common.Mappings;
+using Application.Common.Models;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
@@ -15,11 +16,5 @@ public class MeetingInvitationsDto : IMappable<Meeting>
     public SportsDiscipline SportsDiscipline { get; set; }
     public Difficulty Difficulty { get; set; }
 
-    public string OrganizerUsername { get; set; }
-    
-    public void Mapping(Profile profile)
-    {
-        profile.CreateMap<Meeting, MeetingInvitationsDto>()
-            .ForMember(dto => dto.OrganizerUsername, o => o.MapFrom(m => m.Organizer.Username));
-    }
+    public UserIdentityDto Organizer { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Application.Common.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,4 +13,5 @@ public class FriendUsernameDto
     public string FriendUsername { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
+    public ImageDto? Image { get; set; }
 }

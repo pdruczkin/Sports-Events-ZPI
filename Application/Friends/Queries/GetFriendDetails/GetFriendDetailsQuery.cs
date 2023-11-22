@@ -64,10 +64,15 @@ public class GetFriendDetailsQueryHandler : IRequestHandler<GetFriendDetailsQuer
         var lastFriendship = user.AsInvitee.Where(x => x.InviterId == request.Id)
             .Union(user.AsInviter.Where(x => x.InviteeId == request.Id)).MaxBy(x => x.StatusDateTimeUtc);
 
-        if (lastFriendship == null) return friendDetailsDto;
+        var ifLimitData = false;
+
+        if (lastFriendship == null) 
+            ifLimitData = true;
+
+        if (lastFriendship is not null && lastFriendship.FriendshipStatus != FriendshipStatus.Accepted)
+            ifLimitData = true;
         
-        
-        if (lastFriendship.FriendshipStatus != FriendshipStatus.Accepted)
+        if (ifLimitData)
         {
             friendDetailsDto.FirstName = null;
             friendDetailsDto.LastName = null;
@@ -75,8 +80,8 @@ public class GetFriendDetailsQueryHandler : IRequestHandler<GetFriendDetailsQuer
             friendDetailsDto.Gender = null;
         }
 
-        friendDetailsDto.FriendshipStatusDto.Status = lastFriendship.FriendshipStatus;
-        friendDetailsDto.FriendshipStatusDto.IsOriginated = lastFriendship.InviterId == userId;
+        friendDetailsDto.FriendshipStatusDto.Status = lastFriendship is null ? null : lastFriendship.FriendshipStatus;
+        friendDetailsDto.FriendshipStatusDto.IsOriginated = lastFriendship is null ? null : lastFriendship.InviterId == userId;
 
         return friendDetailsDto;
     }
