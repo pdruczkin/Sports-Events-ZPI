@@ -49,9 +49,12 @@ public static class ConfigureServices
         
         services.AddScoped<IUserContextService, UserContextService>();
         services.AddTransient<IDateTimeProvider, DateTimeProvider>();
+        
         services.AddScoped<IEmailSender, EmailSender>();
         services.AddScoped<IImageService, ImageService>();
-
+        
+        services.AddSignalR();
+        
         return services;
     }
 }

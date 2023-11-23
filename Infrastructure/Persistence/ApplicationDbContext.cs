@@ -11,6 +11,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Meeting> Meetings => Set<Meeting>();
     public DbSet<Friendship> Friendships => Set<Friendship>();
     public DbSet<MeetingParticipant> MeetingParticipants => Set<MeetingParticipant>();
+    public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
     public DbSet<Achievement> Achievements => Set<Achievement>();
     public DbSet<UserAchievement> UserAchievements => Set<UserAchievement>();
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)

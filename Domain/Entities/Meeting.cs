@@ -22,5 +22,6 @@ public class Meeting
     public User Organizer { get; set; }
 
     public ICollection<MeetingParticipant> MeetingParticipants { get; set; } = new List<MeetingParticipant>();
+    public ICollection<ChatMessage> ChatMessages { get; set; } = new List<ChatMessage>();
 }
 

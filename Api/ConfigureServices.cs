@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Application.Common.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Api;
@@ -27,6 +28,21 @@ public static class ConfigureServices
                 ValidAudience = authSettings.JwtIssuer,
                 ValidIssuer = authSettings.JwtIssuer,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSettings.JwtKey))
+            };
+            config.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var accessToken = context.Request.Query["accessToken"];
+                    var path = context.HttpContext.Request.Path;
+                    if (!string.IsNullOrEmpty(accessToken)
+                        && path.StartsWithSegments("/chat-hub"))
+                    {
+                        context.Token = accessToken;
+                    }
+
+                    return Task.CompletedTask;
+                }
             };
         });
         

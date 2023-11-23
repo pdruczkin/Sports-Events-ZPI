@@ -3,6 +3,7 @@ using Api.Middleware;
 using Application;
 using Hangfire;
 using Infrastructure;
+using Infrastructure.Hubs;
 using Infrastructure.Persistence;
 
 
@@ -37,6 +38,8 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 
 app.UseHttpsRedirection();
+
+app.MapHub<ChatHub>("chat-hub");
 
 app.UseAuthorization();
 
