@@ -10,5 +10,8 @@ public interface IApplicationDbContext
     DbSet<Friendship> Friendships { get; }
     DbSet<MeetingParticipant> MeetingParticipants { get; }
     DbSet<ChatMessage> ChatMessages { get; }
+    DbSet<Achievement> Achievements { get; }
+    DbSet<UserAchievement> UserAchievements { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

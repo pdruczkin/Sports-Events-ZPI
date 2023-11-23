@@ -1,5 +1,7 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Models;
+using AutoMapper;
 using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -15,11 +17,13 @@ public class GetFriendListQueryHandler : IRequestHandler<GetFriendsListQuery, Li
 {
     public IApplicationDbContext _applicationDbContext { get; set; }
     private readonly IUserContextService _userContextService;
+    private readonly IMapper _mapper;
 
-    public GetFriendListQueryHandler(IApplicationDbContext applicationDbContext,IUserContextService userContextService)
+    public GetFriendListQueryHandler(IApplicationDbContext applicationDbContext, IUserContextService userContextService, IMapper mapper)
     {
         _applicationDbContext = applicationDbContext;
         _userContextService = userContextService;
+        _mapper = mapper;
     }
     public async Task<List<FriendUsernameDto>> Handle(GetFriendsListQuery request, CancellationToken cancellationToken)
     {
@@ -29,8 +33,10 @@ public class GetFriendListQueryHandler : IRequestHandler<GetFriendsListQuery, Li
             .Users
             .Include(x => x.AsInvitee)
                 .ThenInclude(x => x.Inviter)
+                .ThenInclude(x => x.Image)
             .Include(x => x.AsInviter)
                 .ThenInclude(x => x.Invitee)
+                .ThenInclude(x => x.Image)
             .FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
         if (user is null) throw new AppException("User is not found");
 
@@ -43,6 +49,7 @@ public class GetFriendListQueryHandler : IRequestHandler<GetFriendsListQuery, Li
                 InviterUsername = group.Key.Username,
                 InviterFirstName = group.Key.FirstName,
                 InviterLastName = group.Key.LastName,
+                InviterImage = group.Key.Image,
                 CurrentFriendshipState = group.OrderByDescending(x => x.StatusDateTimeUtc).First()
             })
             .Where(x => x.CurrentFriendshipState.FriendshipStatus == FriendshipStatus.Accepted)
@@ -51,7 +58,8 @@ public class GetFriendListQueryHandler : IRequestHandler<GetFriendsListQuery, Li
                 Id = x.InviterId,
                 FriendUsername = x.InviterUsername,
                 FirstName = x.InviterFirstName,
-                LastName = x.InviterLastName
+                LastName = x.InviterLastName,
+                Image = _mapper.Map<ImageDto>(x.InviterImage)
             });
 
         var friendsAsInviter = user
@@ -63,6 +71,7 @@ public class GetFriendListQueryHandler : IRequestHandler<GetFriendsListQuery, Li
                 InviteeUsername = group.Key.Username,
                 InviteeFirstName = group.Key.FirstName,
                 InviteeLastName = group.Key.LastName,
+                InviteeImage = group.Key.Image,
                 CurrentFriendshipState = group.OrderByDescending(x => x.StatusDateTimeUtc).First()
             })
             .Where(x => x.CurrentFriendshipState.FriendshipStatus == FriendshipStatus.Accepted)
@@ -71,7 +80,8 @@ public class GetFriendListQueryHandler : IRequestHandler<GetFriendsListQuery, Li
                 Id = x.InviteId,
                 FriendUsername = x.InviteeUsername,
                 FirstName = x.InviteeFirstName,
-                LastName = x.InviteeLastName
+                LastName = x.InviteeLastName,
+                Image = _mapper.Map<ImageDto>(x.InviteeImage)
             });
 
         var allFriends = friendsAsInvitee

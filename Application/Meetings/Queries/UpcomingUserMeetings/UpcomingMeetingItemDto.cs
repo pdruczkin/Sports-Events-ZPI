@@ -16,7 +16,7 @@ public class UpcomingMeetingItemDto : IMappable<Meeting>
     public SportsDiscipline SportsDiscipline { get; set; }
     public Difficulty Difficulty { get; set; }
     public int MaxParticipantsQuantity { get; set; }
-    public int FinalParticipantsQuantity { get; set; }
+    public int CurrentParticipantsQuantity { get; set; }
     public int MinParticipantsAge { get; set; }
 
     public Guid OrganizerId { get; set; }

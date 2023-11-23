@@ -1,4 +1,5 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.ExtensionMethods;
 using Application.Common.Interfaces;
 using Application.Common.Models;
 using AutoMapper;
@@ -38,13 +39,15 @@ public class GetMeetingDetailsByIdQueryHandler : IRequestHandler<GetMeetingDetai
 
         var meetingDetailsDto = _mapper.Map<MeetingDetailsDto>(meetingDetails);
 
+        meetingDetailsDto.CurrentParticipantsQuantity = _dbContext.CountMeetingParticipantsQuantity(meetingDetailsDto.Id);
+
         var userId = _userContextService.GetUserId;
 
         // flag if the user from token is also the meeting's organizer
         meetingDetailsDto.IsOrganizer = (userId != null && userId == meetingDetails.OrganizerId);
 
-        var participants = meetingDetails.MeetingParticipants.Select(x => new UserIdentityDto
-            { Id = x.Participant.Id, Username = x.Participant.Username }).ToList();
+        var participants = meetingDetails.MeetingParticipants.Select(x => new ParticipantIdentityDto
+            { Id = x.Participant.Id, Username = x.Participant.Username, Status = x.InvitationStatus }).ToList();
 
         meetingDetailsDto.MeetingParticipants = participants;
         

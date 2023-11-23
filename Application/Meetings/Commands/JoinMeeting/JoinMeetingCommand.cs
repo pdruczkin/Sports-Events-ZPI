@@ -64,10 +64,10 @@ public class JoinMeetingCommandHandler : IRequestHandler<JoinMeetingCommand, Uni
         if(friendshipWithOrganizer is not null && friendshipWithOrganizer.FriendshipStatus == FriendshipStatus.Blocked) 
             throw new AppException("You're not allowed to join that meeting."); 
         
+        if(userId == meeting.OrganizerId) throw new AppException("You can't join meeting while being organizer of this meeting");
         
         
         var foundParticipant = meeting.MeetingParticipants.SingleOrDefault(x => x.ParticipantId == userId);
-        
         
         if (meeting.Visibility == MeetingVisibility.Public)
         {

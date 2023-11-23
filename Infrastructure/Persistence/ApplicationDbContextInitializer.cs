@@ -185,6 +185,135 @@ public class ApplicationDbContextInitializer
             await _dbContext.Meetings.AddAsync(testMeetingPrivate);
         }
 
+        if (!_dbContext.Achievements.Any())
+        {
+            var achievement1 = new Achievement()
+            {
+                Id = "ORGN01",
+                Description = "Liczba założonych spotkań: 1",
+                Category = AchievementCategory.Meetings
+            };
+            await _dbContext.Achievements.AddAsync(achievement1);
+            var achievement2 = new Achievement()
+            {
+                Id = "ORGN05",
+                Description = "Liczba założonych spotkań: 5",
+                Category = AchievementCategory.Meetings
+            };
+            await _dbContext.Achievements.AddAsync(achievement2);
+            var achievement3 = new Achievement()
+            {
+                Id = "ORGN10",
+                Description = "Liczba założonych spotkań: 10",
+                Category = AchievementCategory.Meetings
+            };
+            await _dbContext.Achievements.AddAsync(achievement3);
+            var achievement4 = new Achievement()
+            {
+                Id = "ORGN50",
+                Description = "Liczba założonych spotkań: 50",
+                Category = AchievementCategory.Meetings
+            };
+            await _dbContext.Achievements.AddAsync(achievement4);
+            var achievement5 = new Achievement()
+            {
+                Id = "PART01",
+                Description = "Liczba spotkań jako uczestnik: 1",
+                Category = AchievementCategory.Meetings
+            };
+            await _dbContext.Achievements.AddAsync(achievement5);
+            var achievement6 = new Achievement()
+            {
+                Id = "PART05",
+                Description = "Liczba spotkań jako uczestnik: 5",
+                Category = AchievementCategory.Meetings
+            };
+            await _dbContext.Achievements.AddAsync(achievement6);
+            var achievement7 = new Achievement()
+            {
+                Id = "PART10",
+                Description = "Liczba spotkań jako uczestnik: 10",
+                Category = AchievementCategory.Meetings
+            };
+            await _dbContext.Achievements.AddAsync(achievement7);
+            var achievement8 = new Achievement()
+            {
+                Id = "PART50",
+                Description = "Liczba spotkań jako uczestnik: 50",
+                Category = AchievementCategory.Meetings
+            };
+            await _dbContext.Achievements.AddAsync(achievement8);
+            var achievement9 = new Achievement()
+            {
+                Id = "CHAT",
+                Description = "Pierwsza wiadomość na czacie",
+                Category = AchievementCategory.Meetings
+            };
+            await _dbContext.Achievements.AddAsync(achievement9);
+            var achievement10 = new Achievement()
+            {
+                Id = "TIME01",
+                Description = "Czas uczestnictwa w spotkaniach: 1h",
+                Category = AchievementCategory.Time
+            };
+            await _dbContext.Achievements.AddAsync(achievement10);
+            var achievement11 = new Achievement()
+            {
+                Id = "TIME10",
+                Description = "Czas uczestnictwa w spotkaniach: 10h",
+                Category = AchievementCategory.Time
+            };
+            await _dbContext.Achievements.AddAsync(achievement11);
+            var achievement12 = new Achievement()
+            {
+                Id = "TIME24",
+                Description = "Czas uczestnictwa w spotkaniach: 24h",
+                Category = AchievementCategory.Time
+            };
+            await _dbContext.Achievements.AddAsync(achievement12);
+            var achievement13 = new Achievement()
+            {
+                Id = "FRIE01",
+                Description = "Liczba znajomych: 1",
+                Category = AchievementCategory.Friends
+            };
+            await _dbContext.Achievements.AddAsync(achievement13);
+            var achievement14 = new Achievement()
+            {
+                Id = "FRIE05",
+                Description = "Liczba znajomych: 5",
+                Category = AchievementCategory.Friends
+            };
+            await _dbContext.Achievements.AddAsync(achievement14);
+            var achievement15 = new Achievement()
+            {
+                Id = "FRIE10",
+                Description = "Liczba znajomych: 10",
+                Category = AchievementCategory.Friends
+            };
+            await _dbContext.Achievements.AddAsync(achievement15);
+            var achievement16 = new Achievement()
+            {
+                Id = "FRIE50",
+                Description = "Liczba znajomych: 50",
+                Category = AchievementCategory.Friends
+            };
+            await _dbContext.Achievements.AddAsync(achievement16);
+            var achievement17 = new Achievement()
+            {
+                Id = "FRIE100",
+                Description = "Liczba znajomych: 100",
+                Category = AchievementCategory.Friends
+            };
+            await _dbContext.Achievements.AddAsync(achievement17);
+            var achievement18 = new Achievement()
+            {
+                Id = "FRIE500",
+                Description = "Liczba znajomych: 500",
+                Category = AchievementCategory.Friends
+            };
+            await _dbContext.Achievements.AddAsync(achievement18);
+        }
         await _dbContext.SaveChangesAsync();
     }
 

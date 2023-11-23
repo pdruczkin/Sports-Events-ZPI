@@ -12,8 +12,7 @@ public class GetMeetingsInvitationsQuery : IRequest<List<MeetingInvitationsDto>>
     
 }
 
-public class
-    GetMeetingsInvitationsQueryHandler : IRequestHandler<GetMeetingsInvitationsQuery, List<MeetingInvitationsDto>>
+public class GetMeetingsInvitationsQueryHandler : IRequestHandler<GetMeetingsInvitationsQuery, List<MeetingInvitationsDto>>
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
@@ -39,7 +38,7 @@ public class
         var meetings = await _dbContext
             .Meetings
             .Include(x => x.MeetingParticipants)
-            .Include(x => x.Organizer)
+            .Include(x => x.Organizer).ThenInclude(x => x.Image)
             .Where(x => x.StartDateTimeUtc > _dateTimeProvider.UtcNow)
             .Where(x => x.MeetingParticipants.Any(mp =>
                 mp.ParticipantId == userId && mp.InvitationStatus == InvitationStatus.Pending))

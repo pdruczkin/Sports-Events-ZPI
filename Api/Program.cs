@@ -1,6 +1,7 @@
 using Api;
 using Api.Middleware;
 using Application;
+using Hangfire;
 using Infrastructure;
 using Infrastructure.Hubs;
 using Infrastructure.Persistence;
@@ -21,6 +22,7 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseHangfireDashboard();
     // Initialise and seed database
     using (var scope = app.Services.CreateScope())
     {
