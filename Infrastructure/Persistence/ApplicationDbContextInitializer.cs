@@ -129,8 +129,28 @@ public class ApplicationDbContextInitializer
                         Participant = normalUser,
                         InvitationStatus = InvitationStatus.Accepted
                     }
+                },
+                ChatMessages = new List<ChatMessage>
+                {
+                    new()
+                    {
+                        User = normalUser,
+                        SentAtUtc = _dateTimeProvider.UtcNow.AddMinutes(-2),
+                        Value = "Pierwsza wiadomość"
+                    },
+                    new()
+                    {
+                        User = testUser,
+                        SentAtUtc = _dateTimeProvider.UtcNow.AddMinutes(-1),
+                        Value = "Pierwsza odpowiedź"
+                    },
+                    new()
+                    {
+                        User = normalUser,
+                        SentAtUtc = _dateTimeProvider.UtcNow,
+                        Value = "Druga wiadomość"
+                    }
                 }
-                
             };
 
             await _dbContext.Meetings.AddAsync(testMeeting);
