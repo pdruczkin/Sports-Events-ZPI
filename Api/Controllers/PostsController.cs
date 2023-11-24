@@ -1,4 +1,5 @@
 ﻿using Application.Common.Models;
+using Application.Posts.Commands.AddPost;
 using Application.Posts.Query.GetAllPosts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,4 +16,11 @@ public class PostsController : ApiControllerBase
         return Ok(posts);
     }
     
+    [HttpPost]
+    public async Task<ActionResult> AddPost([FromBody] AddPostCommand command)
+    {
+        await Mediator.Send(command);
+        return Created("", null);
+    }
+
 }
