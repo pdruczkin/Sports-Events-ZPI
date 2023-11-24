@@ -42,7 +42,7 @@ public class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswordComman
 
         user.PasswordResetToken = CreateRandomHexToken();
         user.ResetTokenExpires = _dateTimeProvider.UtcNow.AddHours(2);
-
+        
         await SendForgotPasswordEmail(request.Email, user.PasswordResetToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
 

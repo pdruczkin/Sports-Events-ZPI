@@ -35,4 +35,6 @@ public class User
     
     public Image? Image { get; set; }
 
+    public ICollection<Post> Posts { get; set; } = new List<Post>();
+
 }
