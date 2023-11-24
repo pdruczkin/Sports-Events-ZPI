@@ -25,6 +25,8 @@ public class TimeAchievement
             .FirstOrDefaultAsync(x => x.Id == meetingId);
         if (meeting == null) throw new AppException("Meeting not found");
 
+        await GrantTimeAchievement(meeting.OrganizerId, cancellationToken);
+
         foreach (var mp in meeting.MeetingParticipants)
         {
             await GrantTimeAchievement(mp.ParticipantId, cancellationToken);
@@ -33,12 +35,15 @@ public class TimeAchievement
 
     private async Task GrantTimeAchievement(Guid userId, CancellationToken cancellationToken)
     {
-        var totalTime = await _dbContext
+        var meetings = await _dbContext
             .Meetings
             .Include(x => x.MeetingParticipants)
-            .Where(x => x.EndDateTimeUtc < _dateTimeProvider.UtcNow && (x.OrganizerId == userId 
-                    || (x.MeetingParticipants.Any(x => x.ParticipantId == userId) && x.MeetingParticipants.FirstOrDefault(x => x.ParticipantId == userId)!.InvitationStatus == InvitationStatus.Accepted)))
-            .SumAsync(x => (x.EndDateTimeUtc - x.StartDateTimeUtc).TotalHours, cancellationToken);
+            .ToListAsync(cancellationToken);
+
+        var totalTime = meetings
+            .Where(x => x.EndDateTimeUtc < _dateTimeProvider.UtcNow && (x.OrganizerId == userId
+                    || (x.MeetingParticipants.ToList().Any(x => x.ParticipantId == userId) && x.MeetingParticipants.FirstOrDefault(x => x.ParticipantId == userId)!.InvitationStatus == InvitationStatus.Accepted)))
+            .Sum(x => (int)(x.EndDateTimeUtc - x.StartDateTimeUtc).TotalHours);
 
         if (totalTime >= 24)
         {

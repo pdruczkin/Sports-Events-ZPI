@@ -44,6 +44,7 @@
       <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.13" />
       <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.2" />
       <Folder Include="Achievements\Commands\" />
+      <Folder Include="Statistics\Commands\" />
       <Folder Include="UserDetails\Queries\" />
     </ItemGroup>
 
