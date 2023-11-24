@@ -11,6 +11,7 @@ namespace Application.Meetings.Queries.GetRecentFriendMeetings;
 public class GetRecentFriendMeetingsQuery : IRequest<List<MeetingPinDto>>
 {
     public Guid FriendId { get; set; }
+    public bool AsOrganizer { get; set; }
 }
 
 public class GetRecentFriendMeetingsQueryHandler : IRequestHandler<GetRecentFriendMeetingsQuery, List<MeetingPinDto>>
@@ -40,6 +41,7 @@ public class GetRecentFriendMeetingsQueryHandler : IRequestHandler<GetRecentFrie
             .Users
             .Include(x => x.MeetingParticipants).ThenInclude(x => x.Meeting).ThenInclude(x => x.MeetingParticipants)
             .Include(x => x.MeetingParticipants).ThenInclude(x => x.Meeting).ThenInclude(x => x.Organizer)
+            .Include(x => x.OrganizedEvents).ThenInclude(x => x.MeetingParticipants)
             .FirstOrDefaultAsync(x => x.Id == request.FriendId, cancellationToken);
         if (friend is null) throw new AppException("User you're looking for is not found");
 
@@ -51,9 +53,26 @@ public class GetRecentFriendMeetingsQueryHandler : IRequestHandler<GetRecentFrie
             .Select(x => x.Meeting)
             .ToList();
 
-        var friendRecentMeetingsDtos = _mapper.Map<List<MeetingPinDto>>(friendRecentMeetings);
+        var friendRecentOrganizedMeeting = friend
+            .OrganizedEvents
+            .Where(x => x.EndDateTimeUtc < _dateTimeProvider.UtcNow)
+            .Where(x => x.Visibility == MeetingVisibility.Public || x.MeetingParticipants.Any(participant =>
+                participant.ParticipantId == userId && participant.InvitationStatus == InvitationStatus.Accepted))
+            .ToList();
 
-        return friendRecentMeetingsDtos;
+
+        List<MeetingPinDto> meetingsPins;
+
+        if (request.AsOrganizer)
+        {
+            meetingsPins = _mapper.Map<List<MeetingPinDto>>(friendRecentOrganizedMeeting);
+        }
+        else
+        {
+            meetingsPins = _mapper.Map<List<MeetingPinDto>>(friendRecentMeetings);
+        }
+        
+        return meetingsPins;
     }
 }
 
