@@ -7,7 +7,7 @@ public class Post
     public string? Description { get; set; }
     public string Text { get; set; }
     
-    public DateTime Created { get; set; }
+    public DateTime Created { get; set; } = DateTime.UtcNow;
 
     public Guid UserId { get; set; }
     public User User { get; set; }
