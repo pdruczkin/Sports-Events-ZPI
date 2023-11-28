@@ -53,7 +53,7 @@ public class UpdateMeetingDataCommandHandler : IRequestHandler<UpdateMeetingData
         if (user is null) 
             throw new AppException("User not found.");
 
-        if (user.Id != meeting.OrganizerId || user.Role != Role.Administrator)
+        if (user.Role != Role.Administrator && user.Id != meeting.OrganizerId)
             throw new AppException("Only organizer or system admin can update meeting data.");
 
         var currentParticipantsQuantity = _dbContext.CountMeetingParticipantsQuantity(meeting.Id);

@@ -203,8 +203,42 @@ public class ApplicationDbContextInitializer
             };
 
             await _dbContext.Meetings.AddAsync(testMeetingPrivate);
-        }
+            
+            
+            if (!_dbContext.Posts.Any())
+            {
+                var post1 = new Post()
+                {
+                    Title = "Wstawanie po bułki",
+                    Description = "Trzeba szybciej wstać",
+                    Text =
+                        "Jak się chce zdążyć do piłki to trzeba się szybciej ruszyć, dokładnie tak samo jak się chce zjeść ciepłe bułki rano, trzeba szybciej wstać",
+                    User = testUser
+                };
+                
+                await _dbContext.Posts.AddAsync(post1);
 
+                var post2 = new Post()
+                {
+                    Title = "Dlaczego backend jest ważniejszy",
+                    Text = "No to akurat chyba oczywiste",
+                    User = normalUser
+                };
+                
+                await _dbContext.Posts.AddAsync(post2);
+                
+                var post3 = new Post()
+                {
+                    Title = "Ważny post",
+                    Description = "Baaardzo ważny post",
+                    Text = "Żartowałem",
+                    User = normalUser
+                };
+                
+                await _dbContext.Posts.AddAsync(post3);
+            }
+        }
+        
         if (!_dbContext.Achievements.Any())
         {
             var achievement1 = new Achievement()

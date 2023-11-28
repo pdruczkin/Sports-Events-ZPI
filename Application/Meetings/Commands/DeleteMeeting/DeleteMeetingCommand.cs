@@ -38,7 +38,7 @@ public class DeleteMeetingCommandHandler : IRequestHandler<DeleteMeetingCommand,
         if (meeting.StartDateTimeUtc < _dateTimeProvider.UtcNow)
             throw new AppException("Deleting a meeting is possible only before meeting start time.");
 
-        if (user.Id != meeting.OrganizerId && user.Role != Role.Administrator)
+        if (user.Role != Role.Administrator && user.Id != meeting.OrganizerId)
             throw new AppException("Only organizer or system admin can delete meeting.");
 
         _dbContext.Meetings.Remove(meeting);

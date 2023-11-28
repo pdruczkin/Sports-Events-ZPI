@@ -76,9 +76,9 @@ namespace Api.Controllers
         }
 
         [HttpGet("recent/{friendId}")]
-        public async Task<ActionResult<List<MeetingPinDto>>> GetRecentFriendMeetings(Guid friendId)
+        public async Task<ActionResult<List<MeetingPinDto>>> GetRecentFriendMeetings([FromRoute] Guid friendId, [FromQuery] bool asOrganizer)
         {
-            var friendRecentMeetingsDtos = await Mediator.Send(new GetRecentFriendMeetingsQuery() { FriendId = friendId });
+            var friendRecentMeetingsDtos = await Mediator.Send(new GetRecentFriendMeetingsQuery() { FriendId = friendId, AsOrganizer = asOrganizer});
             return Ok(friendRecentMeetingsDtos);
         }
 
