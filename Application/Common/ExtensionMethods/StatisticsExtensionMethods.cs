@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Application.Common.ExtensionMethods;
 
 
-public static class StatisticsExtesionMehods
+public static class StatisticsExtensionMethods
 {
     public static async Task<StatisticsDto> GetUserStatistics(this IApplicationDbContext dbContext, Guid? userId, IDateTimeProvider dateTimeProvider, IMapper mapper, CancellationToken cancellationToken)
     {
@@ -21,7 +21,7 @@ public static class StatisticsExtesionMehods
             .Include(x => x.MeetingParticipants).ThenInclude(x => x.Participant)
             .Include(x => x.Organizer)
             .Where(x => x.EndDateTimeUtc < dateTimeProvider.UtcNow && (x.OrganizerId == userId
-                    || (x.MeetingParticipants.ToList().Any(x => x.ParticipantId == userId) && x.MeetingParticipants.FirstOrDefault(x => x.ParticipantId == userId)!.InvitationStatus == InvitationStatus.Accepted)))
+                    || (x.MeetingParticipants.ToList().Any(mp => mp.ParticipantId == userId) && x.MeetingParticipants.FirstOrDefault(mp => mp.ParticipantId == userId)!.InvitationStatus == InvitationStatus.Accepted)))
             .ToListAsync(cancellationToken);
 
         var meetingsOrganizedCount = allUserMeetings.Count(x => x.OrganizerId == userId);
@@ -35,7 +35,7 @@ public static class StatisticsExtesionMehods
         int? avgParticipantsAge = null;
         FavoriteParticipantDto? favoriteParticipant = null;
 
-        if (allUserMeetings.Count() > 0)
+        if (allUserMeetings.Any())
         {
             var favoriteSportDisciplineGroup = allUserMeetings
                 .GroupBy(x => x.SportsDiscipline)
@@ -47,12 +47,12 @@ public static class StatisticsExtesionMehods
             };
 
             avgParticipantsAge = (int)allUserMeetings
-                .SelectMany(x => x.MeetingParticipants.Where(x => x.InvitationStatus == InvitationStatus.Accepted && x.ParticipantId != userId).Select(x => x.Participant!.DateOfBirth.CalculateAge()))
+                .SelectMany(a => a.MeetingParticipants.Where(x => x.InvitationStatus == InvitationStatus.Accepted && x.ParticipantId != userId).Select(x => x.Participant!.DateOfBirth.CalculateAge()))
                 .Concat(allUserMeetings.Where(x => x.OrganizerId != userId).Select(x => x.Organizer.DateOfBirth.CalculateAge()))
                 .Average();
 
             var allParticipants = allUserMeetings
-                .SelectMany(x => x.MeetingParticipants.Where(x => x.InvitationStatus == InvitationStatus.Accepted && x.ParticipantId != userId).Select(x => x.ParticipantId))
+                .SelectMany(a => a.MeetingParticipants.Where(x => x.InvitationStatus == InvitationStatus.Accepted && x.ParticipantId != userId).Select(x => x.ParticipantId))
                 .Concat(allUserMeetings.Where(x => x.OrganizerId != userId).Select(x => x.OrganizerId))
                 .ToList();
 
@@ -68,6 +68,7 @@ public static class StatisticsExtesionMehods
 
             var favParticipantUser = await dbContext
                 .Users
+                .Include(x => x.Image)
                 .FirstOrDefaultAsync(x => x.Id == favoriteParticipantGroup.Id, cancellationToken);
 
             var favParticipantIdentity = mapper.Map<UserIdentityDto>(favParticipantUser);
