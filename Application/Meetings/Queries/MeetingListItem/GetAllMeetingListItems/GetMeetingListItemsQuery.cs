@@ -24,7 +24,7 @@ public class GetMeetingListItemsQuery : IRequest<List<MeetingListItemDto>>
     public int? MinParticipantsAge { get; set; }
     public string? TitleSearchPhrase { get; set; }
     public string? SortBy { get; set; }
-    public SortDirection? SortDirection { get; set; }
+    public SortDirection SortDirection { get; set; } = SortDirection.ASC;
 }
 
 public class GetAllMeetingListItemsQueryHandler : IRequestHandler<GetMeetingListItemsQuery, List<MeetingListItemDto>>
@@ -56,8 +56,7 @@ public class GetAllMeetingListItemsQueryHandler : IRequestHandler<GetMeetingList
                 {
                     { nameof(Meeting.StartDateTimeUtc), r => r.StartDateTimeUtc },
                     { nameof(Meeting.Difficulty), r => r.Difficulty },
-                    { nameof(Meeting.MaxParticipantsQuantity), r => r.MaxParticipantsQuantity },
-                    { nameof(Meeting.StartDateTimeUtc), r => r.StartDateTimeUtc}
+                    { nameof(Meeting.MaxParticipantsQuantity), r => r.MaxParticipantsQuantity }
                 };
 
             var selectedColumn = columnsSelectors[request.SortBy];

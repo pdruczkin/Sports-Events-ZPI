@@ -30,7 +30,7 @@ public class GetMeetingsHistoryQuery : IRequest<PagedResult<MeetingHistoryItemDt
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
     public string? SortBy { get; set; }
-    public SortDirection? SortDirection { get; set; }
+    public SortDirection SortDirection { get; set; } = SortDirection.ASC;
 }
 
 public class GetMeetingsHistoryQueryHandler : IRequestHandler<GetMeetingsHistoryQuery, PagedResult<MeetingHistoryItemDto>>
@@ -67,7 +67,6 @@ public class GetMeetingsHistoryQueryHandler : IRequestHandler<GetMeetingsHistory
                     { nameof(Meeting.StartDateTimeUtc), r => r.StartDateTimeUtc },
                     { nameof(Meeting.Difficulty), r => r.Difficulty },
                     { nameof(Meeting.MaxParticipantsQuantity), r => r.MaxParticipantsQuantity },
-                    { nameof(Meeting.StartDateTimeUtc), r => r.StartDateTimeUtc}
                 };
 
             var selectedColumn = columnsSelectors[request.SortBy];
