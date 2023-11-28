@@ -1,5 +1,7 @@
 ﻿using Application.Common.Models;
 using Application.Posts.Commands.AddPost;
+using Application.Posts.Commands.DeletePost;
+using Application.Posts.Commands.UpdatePost;
 using Application.Posts.Query.GetAllPosts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +23,20 @@ public class PostsController : ApiControllerBase
     {
         await Mediator.Send(command);
         return Created("", null);
+    }
+
+    [HttpPut]
+    public async Task<ActionResult> UpdatePost([FromBody] UpdatePostCommand command)
+    {
+        await Mediator.Send(command);
+        return Ok();
+    }
+
+    [HttpDelete("{postId}")]
+    public async Task<ActionResult> DeletePost([FromRoute] Guid postId)
+    {
+        await Mediator.Send(new DeletePostCommand{PostId = postId});
+        return NoContent();
     }
 
 }
