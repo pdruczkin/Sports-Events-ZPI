@@ -27,7 +27,7 @@ public class GetUpcomingMeetingsQuery : IRequest<List<UpcomingMeetingItemDto>>
     public string? TitleSearchPhrase { get; set; }
     public bool AsOrganizer { get; set; }
     public string? SortBy { get; set; }
-    public SortDirection? SortDirection { get; set; }
+    public SortDirection SortDirection { get; set; } = SortDirection.ASC;
 }
 
 public class GetUpcomingMeetingsQueryHandler : IRequestHandler<GetUpcomingMeetingsQuery, List<UpcomingMeetingItemDto>>
