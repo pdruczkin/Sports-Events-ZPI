@@ -29,7 +29,6 @@ public class DeletePostCommandHandler : IRequestHandler<DeletePostCommand, Unit>
 
         var user = await _dbContext
             .Users
-            .Include(x => x.Posts)
             .FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
         if (user is null) throw new AppException("Logged user is not found");
         
