@@ -82,10 +82,7 @@ public class JoinMeetingCommandHandler : IRequestHandler<JoinMeetingCommand, Uni
             }
             else
             {
-                if (foundParticipant.InvitationStatus == InvitationStatus.Pending)
-                {
-                   foundParticipant.InvitationStatus = InvitationStatus.Accepted; 
-                }
+                foundParticipant.InvitationStatus = InvitationStatus.Accepted;
             }
         }
         else
