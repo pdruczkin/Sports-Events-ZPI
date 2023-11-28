@@ -1,4 +1,5 @@
 ﻿using Application.Common.Mappings;
+using Application.Common.Models;
 using AutoMapper;
 using Domain.Entities;
 
@@ -13,15 +14,12 @@ public class PostDto : IMappable<Post>
     
     public DateTime Created { get; set; } = DateTime.UtcNow;
 
-    public Guid UserId { get; set; }
-    public string Username { get; set; } = "";
-    public string UserImageUrl { get; set; } = "";
+    public UserIdentityDto Author { get; set; }
 
 
     public void Mapping(Profile profile)
     {
         profile.CreateMap<Post, PostDto>()
-            .ForMember(x => x.Username, o => o.MapFrom(s => s.User.Username))
-            .ForMember(x => x.UserImageUrl, o => o.MapFrom(s => s.User.Image != null ? s.User.Image.Url : ""));
+            .ForMember(x => x.Author, o => o.MapFrom(s => s.User));
     }
 }
