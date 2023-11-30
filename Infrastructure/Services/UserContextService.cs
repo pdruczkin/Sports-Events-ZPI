@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Domain.Enums;
 
 namespace Infrastructure.Services;
 
@@ -28,5 +29,10 @@ public class UserContextService : IUserContextService
         if ((claims == null) || (claims?.Count == 0)) return null;
 
         return Guid.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
+    }
+
+    public bool HasAdminRole()
+    {
+        return User.IsInRole(nameof(Role.Administrator));
     }
 }
