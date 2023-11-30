@@ -56,6 +56,7 @@ public static class ConfigureServices
             {
                 opt.AllowAnyMethod()
                     .AllowAnyHeader()
+                    .AllowCredentials()
                     .WithOrigins(configuration["AllowedOrigins"]);
             });
         });
