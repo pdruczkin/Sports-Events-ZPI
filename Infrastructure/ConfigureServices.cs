@@ -35,10 +35,10 @@ public static class ConfigureServices
                 builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
 
             options.UseTriggers(triggerOptions => {
-                triggerOptions.AddTrigger<SendEmailTestTrigger>();
                 triggerOptions.AddTrigger<OrgnAchievementTrigger>();
                 triggerOptions.AddTrigger<FrieAchievementTrigger>();
                 triggerOptions.AddTrigger<TimePartAchievementTrigger>();
+                triggerOptions.AddTrigger<ChatAchievementTrigger>();
             });
         });
 
