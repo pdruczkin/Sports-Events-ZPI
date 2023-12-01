@@ -42,7 +42,7 @@ public class GetUserDetailsQueryHandler : IRequestHandler<GetUserDetailsCommand,
         if (user is null) throw new AppException("User is not found");
 
         var userDetails = _mapper.Map<UserDetails>(user);
-
+        
         var recentMeetings = user.MeetingParticipants
             .Where(x => x.InvitationStatus == InvitationStatus.Accepted)
             .Where(x => x.Meeting!.EndDateTimeUtc < _dateTimeProvider.UtcNow)
@@ -52,6 +52,7 @@ public class GetUserDetailsQueryHandler : IRequestHandler<GetUserDetailsCommand,
             .ToList();
 
         userDetails.RecentMeetings = _mapper.Map<List<MeetingPinDto>>(recentMeetings);
+        userDetails.HasAdminRole = _userContextService.HasAdminRole();
         
         return userDetails;
     }

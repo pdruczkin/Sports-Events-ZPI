@@ -47,8 +47,12 @@ public sealed class ChatHub : Hub
         
         var meeting = await _dbContext.Meetings.Include(x => x.MeetingParticipants).FirstOrDefaultAsync(x => x.Id == meetingIdGuid);
         if(meeting == null) throw new SignalRException($"Meeting of id {meetingId} is not found");
-        
-        if(!meeting.MeetingParticipants.Any(x => x.ParticipantId == userId && x.InvitationStatus == InvitationStatus.Accepted)) throw new SignalRException($"You're not allowed to join this chat");
+
+        if (!meeting.MeetingParticipants.Any(x =>
+                x.ParticipantId == userId && x.InvitationStatus == InvitationStatus.Accepted) && meeting.Organizer.Id != userId)
+        {
+            throw new SignalRException($"You're not allowed to join this chat");
+        }
         
         var chatMessages = await _dbContext
             .ChatMessages

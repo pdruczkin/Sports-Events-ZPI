@@ -17,6 +17,8 @@ public class UserDetails : IMappable<User>
     public int Age { get; set; }
     public Gender Gender { get; set; }
     public ImageDto? Image { get; set; }
+
+    public bool HasAdminRole { get; set; }
     public IEnumerable<MeetingPinDto> RecentMeetings { get; set; } = new List<MeetingPinDto>();
     
     
