@@ -6,6 +6,7 @@ namespace Application.Common.Models;
 
 public class ChatMessageDto : IMappable<ChatMessage>
 {
+    public Guid Id { get; set; }
     public string Value { get; set; } = "";
     public DateTime SentAtUtc { get; set; }
     public string Username { get; set; } = "Unknown";
