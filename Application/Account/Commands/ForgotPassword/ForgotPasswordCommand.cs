@@ -1,9 +1,9 @@
-﻿using System.Security.Cryptography;
+﻿using Application.Common;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
-using Application.Common.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace Application.Account.Commands.ForgotPassword;
 
@@ -42,9 +42,11 @@ public class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswordComman
 
         user.PasswordResetToken = CreateRandomHexToken();
         user.ResetTokenExpires = _dateTimeProvider.UtcNow.AddHours(2);
-        
-        await SendForgotPasswordEmail(request.Email, user.PasswordResetToken);
+
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        var emailDto = Mails.GetForgotPasswordEmail(request.Email, user.Username, user.PasswordResetToken);
+        await _emailSender.SendEmailAsync(emailDto);
 
         return await Task.FromResult(Unit.Value);
     }
@@ -52,19 +54,5 @@ public class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswordComman
     private string CreateRandomHexToken()
     {
         return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
-    }
-    
-    private Task SendForgotPasswordEmail(string userEmail, string token)
-    {
-        var url = $"tutajURLdoFrontu?token={token}";
-
-        var emailDto = new EmailDto
-        {
-            To = userEmail,
-            Subject = "ZPI Meetings reset password",
-            Body = $"Click on the link below to reset your password \n {url}"
-        };
-        
-        return _emailSender.SendEmailAsync(emailDto);
     }
 }

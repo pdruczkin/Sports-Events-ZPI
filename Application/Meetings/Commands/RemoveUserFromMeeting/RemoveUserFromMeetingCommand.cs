@@ -1,4 +1,5 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Enums;
 using MediatR;
@@ -17,14 +18,16 @@ public class RemoveUserFromMeetingCommandHandler : IRequestHandler<RemoveUserFro
     private readonly IApplicationDbContext _dbContext;
     private readonly IUserContextService _userContextService;
     private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly IEmailSender _emailSender;
 
-    public RemoveUserFromMeetingCommandHandler(IApplicationDbContext dbContext, IUserContextService userContextService, IDateTimeProvider dateTimeProvider)
+    public RemoveUserFromMeetingCommandHandler(IApplicationDbContext dbContext, IUserContextService userContextService, IDateTimeProvider dateTimeProvider, IEmailSender emailSender)
     {
         _dbContext = dbContext;
         _userContextService = userContextService;
         _dateTimeProvider = dateTimeProvider;
+        _emailSender = emailSender;
     }
-    
+
     public async Task<Unit> Handle(RemoveUserFromMeetingCommand request, CancellationToken cancellationToken)
     {
         var userId = _userContextService.GetUserId;
@@ -35,7 +38,7 @@ public class RemoveUserFromMeetingCommandHandler : IRequestHandler<RemoveUserFro
 
         var meeting = await _dbContext
             .Meetings
-            .Include(x => x.MeetingParticipants)
+            .Include(x => x.MeetingParticipants).ThenInclude(x => x.Participant)
             .FirstOrDefaultAsync(x => x.Id == request.MeetingId, cancellationToken);
         if (meeting == null) throw new AppException("Meeting is not found");
 
@@ -52,7 +55,10 @@ public class RemoveUserFromMeetingCommandHandler : IRequestHandler<RemoveUserFro
         userParticipationToRemove.InvitationStatus = InvitationStatus.Rejected;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
-        
+
+        var emailDto = Mails.GetRemovedFromMeetingNotificationEmail(userParticipationToRemove.Participant!.Email, userParticipationToRemove.Participant!.Username, user.Username, meeting.Title);
+        await _emailSender.SendEmailAsync(emailDto);
+
         return await Task.FromResult(Unit.Value);
     }
 }

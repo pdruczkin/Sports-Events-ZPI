@@ -1,4 +1,5 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common;
+using Application.Common.Exceptions;
 using Application.Common.ExtensionMethods;
 using Application.Common.Interfaces;
 using Domain.Entities;
@@ -19,12 +20,14 @@ public class SendInvitationCommandHandler : IRequestHandler<SendInvitationComman
     private readonly IApplicationDbContext _dbContext;
     private readonly IUserContextService _userContextService;
     private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly IEmailSender _emailSender;
 
-    public SendInvitationCommandHandler(IApplicationDbContext dbContext, IUserContextService userContextService, IDateTimeProvider dateTimeProvider)
+    public SendInvitationCommandHandler(IApplicationDbContext dbContext, IUserContextService userContextService, IDateTimeProvider dateTimeProvider, IEmailSender emailSender)
     {
         _dbContext = dbContext;
         _userContextService = userContextService;
         _dateTimeProvider = dateTimeProvider;
+        _emailSender = emailSender;
     }
 
     public async Task<Unit> Handle(SendInvitationCommand request, CancellationToken cancellationToken)
@@ -84,6 +87,9 @@ public class SendInvitationCommandHandler : IRequestHandler<SendInvitationComman
         
         meeting.MeetingParticipants.Add(newMeetingParticipant);
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        var emailDto = Mails.GetMeetingInvitationNotificationEmail(newParticipant.Email, newParticipant.Username, user.Username, meeting.Title, meeting.Id);
+        await _emailSender.SendEmailAsync(emailDto);
 
         return await Task.FromResult(Unit.Value);
     }

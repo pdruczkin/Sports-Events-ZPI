@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using Application.Common;
 using Application.Common.Interfaces;
 using Application.Common.Mappings;
 using Application.Common.Models;
@@ -58,9 +59,11 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, s
         user.VerificationToken = verificationToken;
         
         _applicationDbContext.Users.Add(user);
-        await SendVerificationEmail(user.Email, user.Username, user.VerificationToken);
-        
+                        
         await _applicationDbContext.SaveChangesAsync(cancellationToken);
+
+        var emailDto = Mails.GetConfirmRegisterNotificationEmail(request.Email, user.Username, user.VerificationToken);
+        await _emailSender.SendEmailAsync(emailDto);
         
         return user.Id.ToString();
     }
@@ -68,19 +71,5 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, s
     private string CreateRandomHexToken()
     {
         return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
-    }
-
-    private Task SendVerificationEmail(string userEmail, string username, string token)
-    {
-        var url = $"tutajURLdoFrontu?token={token}";
-
-        var emailDto = new EmailDto()
-        {
-            To = userEmail,
-            Subject = "Verify your Account",
-            Body = $"Hello {username}, click on link below to complete account activation process \n {url}"
-        };
-        
-        return _emailSender.SendEmailAsync(emailDto);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
 using Domain.Enums;
@@ -16,10 +17,12 @@ public class AcceptFriendInvitationCommandHandler : IRequestHandler<AcceptFriend
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly IUserContextService _userContextService;
-    public AcceptFriendInvitationCommandHandler(IApplicationDbContext dbContext, IUserContextService userContextService)
+    private readonly IEmailSender _emailSender;
+    public AcceptFriendInvitationCommandHandler(IApplicationDbContext dbContext, IUserContextService userContextService, IEmailSender emailSender)
     {
         _dbContext = dbContext;
         _userContextService = userContextService;
+        _emailSender = emailSender;
     }
 
     public async Task<Unit> Handle(AcceptFriendInvitationCommand request, CancellationToken cancellationToken)
@@ -64,6 +67,10 @@ public class AcceptFriendInvitationCommandHandler : IRequestHandler<AcceptFriend
         });
 
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        var emailDto = Mails.GetAcceptedFriendInvitationNotificationEmail(inviter.Email, inviter.Username, user.Username);
+        await _emailSender.SendEmailAsync(emailDto);
+        
         return await Task.FromResult(Unit.Value);
     }
 }
