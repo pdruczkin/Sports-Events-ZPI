@@ -1,3 +1,4 @@
+using Application.Common;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
@@ -16,12 +17,14 @@ public class SendFriendInvitationCommandHandler : IRequestHandler<SendFriendInvi
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly IUserContextService _userContextService;
-    public SendFriendInvitationCommandHandler(IApplicationDbContext dbContext, IUserContextService userContextService)
+    private readonly IEmailSender _emailSender;
+    public SendFriendInvitationCommandHandler(IApplicationDbContext dbContext, IUserContextService userContextService, IEmailSender emailSender)
     {
         _dbContext = dbContext;
         _userContextService = userContextService;
+        _emailSender = emailSender;
     }
-    
+
     public async Task<Unit> Handle(SendFriendInvitationCommand request, CancellationToken cancellationToken)
     {
         var inviterId = _userContextService.GetUserId;
@@ -59,15 +62,19 @@ public class SendFriendInvitationCommandHandler : IRequestHandler<SendFriendInvi
             if(currentFriendshipState.FriendshipStatus == FriendshipStatus.Blocked)
                 throw new AppException("User is blocked");
         }
-        
+
         _dbContext.Friendships.Add(new Friendship
         {
             Inviter = inviter,
             Invitee = invitee,
             FriendshipStatus = FriendshipStatus.Invited
-        });
-        
+        });        
+
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        var emailDto = Mails.GetFriendInvitationNotificationEmail(invitee.Email, invitee.Username, inviter.Username);
+        await _emailSender.SendEmailAsync(emailDto);
+
         return await Task.FromResult(Unit.Value);
     }
 }
