@@ -36,7 +36,7 @@ public class DeleteMeetingCommandHandler : IRequestHandler<DeleteMeetingCommand,
         var meeting = await _dbContext
             .Meetings
             .Include(x => x.Organizer)
-            .Include(x => x.MeetingParticipants)
+            .Include(x => x.MeetingParticipants).ThenInclude(x => x.Participant)
             .FirstOrDefaultAsync(x => x.Id == request.MeetingId, cancellationToken);
         if (meeting is null) throw new AppException("Meeting is not found");
 
