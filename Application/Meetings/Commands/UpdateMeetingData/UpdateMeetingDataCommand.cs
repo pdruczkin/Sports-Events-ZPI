@@ -67,7 +67,9 @@ public class UpdateMeetingDataCommandHandler : IRequestHandler<UpdateMeetingData
         var youngestParticipantAge = meeting
             .MeetingParticipants
             .Where(x => x.InvitationStatus == InvitationStatus.Accepted)
-            .Min(x => x.Participant.DateOfBirth.CalculateAge());
+            .Select(x => x.Participant.DateOfBirth.CalculateAge())
+            .DefaultIfEmpty(int.MaxValue)
+            .Min();
         if (youngestParticipantAge < request.MinParticipantsAge)
             throw new AppException("New min participants age below current youngest participant age.");
 
