@@ -44,8 +44,8 @@ public class UserDetailsController : ApiControllerBase
         return Ok(imageDto);
     }
 
-    [HttpDelete("image")]
-    public async Task<ActionResult> DeleteImage([FromBody] string publicId)
+    [HttpDelete("image/{publicId}")]
+    public async Task<ActionResult> DeleteImage([FromRoute] string publicId)
     {
         var command = new DeleteImageCommand{ PublicId = publicId };
         await Mediator.Send(command);
