@@ -115,8 +115,8 @@ public class GetMeetingsHistoryQueryHandler : IRequestHandler<GetMeetingsHistory
                                     .Where(x => request.Difficulty == null || x.Difficulty == request.Difficulty)
                                     .Where(x => request.MeetingVisibility == null || x.Visibility == request.MeetingVisibility)
                                     .Where(x => request.MaxParticipantsQuantity == null || x.MaxParticipantsQuantity <= request.MaxParticipantsQuantity)
-                                    .Where(x => request.FinalParticipantsQuantityFrom == null || x.CountMeetingParticipantsQuantity() >= request.FinalParticipantsQuantityFrom)
-                                    .Where(x => request.FinalParticipantsQuantityTo == null || x.CountMeetingParticipantsQuantity() <= request.FinalParticipantsQuantityTo)
+                                    .Where(x => request.FinalParticipantsQuantityFrom == null || x.MeetingParticipants.Count(mp => mp.MeetingId == x.Id && mp.InvitationStatus == InvitationStatus.Accepted) + 1 >= request.FinalParticipantsQuantityFrom)
+                                    .Where(x => request.FinalParticipantsQuantityTo == null || x.MeetingParticipants.Count(mp => mp.MeetingId == x.Id && mp.InvitationStatus == InvitationStatus.Accepted) + 1 <= request.FinalParticipantsQuantityTo)
                                     .Where(x => request.MinParticipantsAgeFrom == null || x.MinParticipantsAge >= request.MinParticipantsAgeFrom)
                                     .Where(x => request.MinParticipantsAgeTo == null || x.MinParticipantsAge <= request.MinParticipantsAgeTo)
                                     .Where(x => request.TitleSearchPhrase == null || x.Title.ToLower().Contains(request.TitleSearchPhrase.ToLower()));
