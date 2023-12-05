@@ -18,7 +18,7 @@ public class MeetingListItemDto : IMappable<Meeting>
     public int MaxParticipantsQuantity { get; set; }
     public int CurrentParticipantsQuantity { get; set; }
     public int MinParticipantsAge { get; set; }
-
+    public MeetingVisibility Visibility { get; set; }
     public string OrganizerUsername { get; set; }
 
 }
