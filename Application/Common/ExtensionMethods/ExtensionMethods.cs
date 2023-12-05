@@ -18,10 +18,21 @@ public static class ExtensionMethods
 
         return age;
     }
+    public static int CountMeetingParticipantsQuantity(this Meeting meeting)
+    {
+        if(meeting.MeetingParticipants is null)
+        {
+            return 1;
+        }
 
+        var totalParticipantsQuantity = 1 + meeting
+            .MeetingParticipants
+            .Count(mp => mp.MeetingId == meeting.Id && mp.InvitationStatus == InvitationStatus.Accepted);
+        return totalParticipantsQuantity;
+    }
     public static int CountMeetingParticipantsQuantity(this IApplicationDbContext dbContext, Guid meetingId)
     {
-        var totalParticipantsQuantity = 1 + dbContext // 1 - meeting's organizer is also a participant
+        var totalParticipantsQuantity = 1 + dbContext
             .MeetingParticipants
             .Count(mp => mp.MeetingId == meetingId && mp.InvitationStatus == InvitationStatus.Accepted);
         return totalParticipantsQuantity;

@@ -60,7 +60,7 @@ public class UpdateMeetingDataCommandHandler : IRequestHandler<UpdateMeetingData
         if (user.Role != Role.Administrator && user.Id != meeting.OrganizerId)
             throw new AppException("Only organizer or system admin can update meeting data.");
 
-        var currentParticipantsQuantity = _dbContext.CountMeetingParticipantsQuantity(meeting.Id);
+        var currentParticipantsQuantity = meeting.CountMeetingParticipantsQuantity();
         if (currentParticipantsQuantity > request.MaxParticipantsQuantity)
             throw new AppException("New max participants quantity exceeds current participants count.");
 

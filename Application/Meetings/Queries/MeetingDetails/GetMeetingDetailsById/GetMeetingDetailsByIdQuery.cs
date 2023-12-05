@@ -39,7 +39,7 @@ public class GetMeetingDetailsByIdQueryHandler : IRequestHandler<GetMeetingDetai
 
         var meetingDetailsDto = _mapper.Map<MeetingDetailsDto>(meetingDetails);
 
-        meetingDetailsDto.CurrentParticipantsQuantity = _dbContext.CountMeetingParticipantsQuantity(meetingDetailsDto.Id);
+        meetingDetailsDto.CurrentParticipantsQuantity = meetingDetails.CountMeetingParticipantsQuantity();
 
         var userId = _userContextService.GetUserId;
 
