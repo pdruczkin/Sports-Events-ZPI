@@ -109,7 +109,7 @@ public class GetAllMeetingListItemsQueryHandler : IRequestHandler<GetMeetingList
                                     .Where(x => request.SportsDiscipline == null || x.SportsDiscipline == request.SportsDiscipline)
                                     .Where(x => request.Difficulty == null || x.Difficulty == request.Difficulty)
                                     .Where(x => request.MaxParticipantsQuantity == null || x.MaxParticipantsQuantity <= request.MaxParticipantsQuantity)
-                                    .Where(x => request.CurrentParticipantsQuantity == null || _applicationDbContext.CountMeetingParticipantsQuantity(x.Id) <= request.CurrentParticipantsQuantity)
+                                    .Where(x => request.CurrentParticipantsQuantity == null || x.CountMeetingParticipantsQuantity() <= request.CurrentParticipantsQuantity)
                                     .Where(x => request.MinParticipantsAge == null || x.MinParticipantsAge >= request.MinParticipantsAge)
                                     .Where(x => request.TitleSearchPhrase == null || x.Title.ToLower().Contains(request.TitleSearchPhrase.ToLower()))
                                     .Where(x => x.Visibility == MeetingVisibility.Public || 

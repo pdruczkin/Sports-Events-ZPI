@@ -63,8 +63,7 @@ public class GetUpcomingMeetingsQueryHandler : IRequestHandler<GetUpcomingMeetin
                 {
                     { nameof(Meeting.StartDateTimeUtc), r => r.StartDateTimeUtc },
                     { nameof(Meeting.Difficulty), r => r.Difficulty },
-                    { nameof(Meeting.MaxParticipantsQuantity), r => r.MaxParticipantsQuantity },
-                    { nameof(Meeting.StartDateTimeUtc), r => r.StartDateTimeUtc}
+                    { nameof(Meeting.MaxParticipantsQuantity), r => r.MaxParticipantsQuantity }
                 };
 
             var selectedColumn = columnsSelectors[request.SortBy];
@@ -91,7 +90,7 @@ public class GetUpcomingMeetingsQueryHandler : IRequestHandler<GetUpcomingMeetin
                         .Include(x => x.MeetingParticipants);
 
         var filteredMeetingsIQueryable = meetings
-                                    .Where(x => (request.StartDateTimeUtcFrom == null && x.StartDateTimeUtc >= DateTime.UtcNow) 
+                                    .Where(x => (request.StartDateTimeUtcFrom == null && x.StartDateTimeUtc >= DateTime.UtcNow)
                                                     || x.StartDateTimeUtc >= request.StartDateTimeUtcFrom)
                                     .Where(x => (request.StartDateTimeUtcTo == null && x.StartDateTimeUtc >= DateTime.UtcNow)
                                                     || x.StartDateTimeUtc <= request.StartDateTimeUtcTo)
@@ -99,8 +98,8 @@ public class GetUpcomingMeetingsQueryHandler : IRequestHandler<GetUpcomingMeetin
                                     .Where(x => request.Difficulty == null || x.Difficulty == request.Difficulty)
                                     .Where(x => request.MeetingVisibility == null || x.Visibility == request.MeetingVisibility)
                                     .Where(x => request.MaxParticipantsQuantity == null || x.MaxParticipantsQuantity <= request.MaxParticipantsQuantity)
-                                    .Where(x => request.CurrentParticipantsQuantityFrom == null || _applicationDbContext.CountMeetingParticipantsQuantity(x.Id) >= request.CurrentParticipantsQuantityFrom)
-                                    .Where(x => request.CurrentParticipantsQuantityTo == null || _applicationDbContext.CountMeetingParticipantsQuantity(x.Id) <= request.CurrentParticipantsQuantityTo)
+                                    .Where(x => request.CurrentParticipantsQuantityFrom == null || x.CountMeetingParticipantsQuantity() >= request.CurrentParticipantsQuantityFrom)
+                                    .Where(x => request.CurrentParticipantsQuantityTo == null || x.CountMeetingParticipantsQuantity() <= request.CurrentParticipantsQuantityTo)
                                     .Where(x => request.MinParticipantsAgeFrom == null || x.MinParticipantsAge >= request.MinParticipantsAgeFrom)
                                     .Where(x => request.MinParticipantsAgeTo == null || x.MinParticipantsAge <= request.MinParticipantsAgeTo)
                                     .Where(x => request.TitleSearchPhrase == null || x.Title.ToLower().Contains(request.TitleSearchPhrase.ToLower()));
