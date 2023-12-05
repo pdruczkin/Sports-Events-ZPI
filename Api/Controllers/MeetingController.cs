@@ -55,7 +55,7 @@ namespace Api.Controllers
         public async Task<ActionResult<string>> Create([FromBody] CreateMeetingCommand command)
         {
             var newMeetingId = await Mediator.Send(command);
-            return Created($"/api/Meeting/{newMeetingId}", null);
+            return Created($"/api/Meeting/{newMeetingId}", newMeetingId);
         }
 
         [AllowAnonymous]
