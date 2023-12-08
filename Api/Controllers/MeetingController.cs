@@ -52,10 +52,10 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> Create([FromBody] CreateMeetingCommand command)
+        public async Task<ActionResult<MeetingDetailsDto>> Create([FromBody] CreateMeetingCommand command)
         {
-            var newMeetingId = await Mediator.Send(command);
-            return Created($"/api/Meeting/{newMeetingId}", newMeetingId);
+            var newMeeting = await Mediator.Send(command);
+            return Created($"/api/Meeting/{newMeeting.Id}", newMeeting);
         }
 
         [AllowAnonymous]

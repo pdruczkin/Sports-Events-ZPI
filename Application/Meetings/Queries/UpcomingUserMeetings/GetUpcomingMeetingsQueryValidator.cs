@@ -9,8 +9,7 @@ public class GetUpcomingMeetingsQueryValidator : AbstractValidator<GetUpcomingMe
     { 
         nameof(Meeting.StartDateTimeUtc), 
         nameof(Meeting.Difficulty), 
-        nameof(Meeting.MaxParticipantsQuantity),
-        nameof(Meeting.StartDateTimeUtc)
+        nameof(Meeting.MaxParticipantsQuantity)
     };
 
     public GetUpcomingMeetingsQueryValidator()

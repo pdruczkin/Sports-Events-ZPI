@@ -16,8 +16,7 @@ public class GetMeetingHistoryQueryValidator : AbstractValidator<GetMeetingsHist
     { 
         nameof(Meeting.StartDateTimeUtc), 
         nameof(Meeting.Difficulty), 
-        nameof(Meeting.MaxParticipantsQuantity),
-        nameof(Meeting.StartDateTimeUtc)
+        nameof(Meeting.MaxParticipantsQuantity)
     };
 
     public GetMeetingHistoryQueryValidator()

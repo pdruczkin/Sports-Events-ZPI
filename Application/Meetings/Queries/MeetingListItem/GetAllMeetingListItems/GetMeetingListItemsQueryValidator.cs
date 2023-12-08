@@ -10,8 +10,7 @@ public class GetMeetingListItemsQueryValidator : AbstractValidator<GetMeetingLis
     {
         nameof(Meeting.StartDateTimeUtc),
         nameof(Meeting.Difficulty),
-        nameof(Meeting.MaxParticipantsQuantity),
-        nameof(Meeting.StartDateTimeUtc)
+        nameof(Meeting.MaxParticipantsQuantity)
     };
 
     public GetMeetingListItemsQueryValidator()
