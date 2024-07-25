@@ -29,7 +29,7 @@ The project aims to create an API that facilitates the organization of group spo
 1. [Patryk Ruczkin](https://github.com/pdruczkin)
 2. [Marek Schubert](https://github.com/marekschubert)
 
-React app (available at [link]()):
+React app (available at [link](https://github.com/michal-sternik/sporty_frontend_bachelors):
 
 3. Piotr Zięba 
 4. [Michał Sternik](https://github.com/michal-sternik)
